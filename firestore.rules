@@ -35,13 +35,22 @@ service cloud.firestore {
       allow delete: if signedIn() && resource.data.landlordId == request.auth.uid;
     }
 
-    // Rooms inside a boarding house. Same rule as properties.
+    // True if the boarding house belongs to the logged-in user.
+    function ownsProperty(propertyId) {
+      return get(/databases/$(database)/documents/properties/$(propertyId)).data.landlordId
+        == request.auth.uid;
+    }
+
+    // Rooms inside a boarding house. Only the owner of that boarding house can add or change them.
     match /rooms/{roomId} {
       allow read: if signedIn();
-      allow create: if signedIn() && request.resource.data.landlordId == request.auth.uid;
+      allow create: if signedIn()
+        && request.resource.data.landlordId == request.auth.uid
+        && ownsProperty(request.resource.data.propertyId);
       allow update: if signedIn()
         && resource.data.landlordId == request.auth.uid
-        && request.resource.data.landlordId == request.auth.uid;
+        && request.resource.data.landlordId == request.auth.uid
+        && ownsProperty(request.resource.data.propertyId);
       allow delete: if signedIn() && resource.data.landlordId == request.auth.uid;
     }
   }

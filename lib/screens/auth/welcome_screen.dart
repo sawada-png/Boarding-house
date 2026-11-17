@@ -4,7 +4,7 @@ import '../../services/auth_service.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_text_styles.dart';
 import '../../widgets/primary_button.dart';
-import '../shared/show_error.dart';
+import '../shared/dialogs.dart';
 import 'phone_screen.dart';
 
 /// First screen when logged out: pick phone, Google or Facebook.

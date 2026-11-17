@@ -6,13 +6,15 @@ import '../../models/property.dart';
 import '../../services/property_service.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_text_styles.dart';
+import '../../widgets/chip_picker.dart';
 import '../../widgets/circle_back_button.dart';
+import '../../widgets/delete_text_button.dart';
+import '../../widgets/form_section_label.dart';
 import '../../widgets/labeled_field.dart';
 import '../../widgets/photo_picker_grid.dart';
 import '../../widgets/pin_map.dart';
 import '../../widgets/primary_button.dart';
-import '../../widgets/tag_chip.dart';
-import '../shared/show_error.dart';
+import '../shared/dialogs.dart';
 import 'location_picker_screen.dart';
 
 /// Add a new boarding house, or edit one when [existing] is given.
@@ -32,37 +34,18 @@ class _PropertyFormScreenState extends State<PropertyFormScreen> {
   late final _description = TextEditingController(text: _old?.description);
   late final _priceMin = TextEditingController(text: _old == null ? '' : '${_old.priceMin}');
   late final _priceMax = TextEditingController(text: _old == null ? '' : '${_old.priceMax}');
-  final _customTag = TextEditingController();
 
   late LatLng? _pin = _old == null ? null : LatLng(_old.latitude, _old.longitude);
   late List<PickedPhoto> _photos = [...?_old?.photos.map(PickedPhoto.uploaded)];
-  late final List<String> _tags = [...?_old?.tags];
+  late List<String> _tags = [...?_old?.tags];
   bool _saving = false;
 
   @override
   void dispose() {
-    for (final c in [_name, _description, _priceMin, _priceMax, _customTag]) {
+    for (final c in [_name, _description, _priceMin, _priceMax]) {
       c.dispose();
     }
     super.dispose();
-  }
-
-  /// Tag buttons to show: ready-made ones plus any the landlord typed.
-  List<String> get _tagChoices => [
-        ...propertyTagOptions,
-        ..._tags.where((t) => !propertyTagOptions.contains(t)),
-      ];
-
-  void _toggleTag(String tag) =>
-      setState(() => _tags.contains(tag) ? _tags.remove(tag) : _tags.add(tag));
-
-  void _addCustomTag() {
-    final tag = _customTag.text.trim();
-    if (tag.isEmpty) return;
-    setState(() {
-      if (!_tags.contains(tag)) _tags.add(tag);
-      _customTag.clear();
-    });
   }
 
   Future<void> _pickLocation() async {
@@ -112,6 +95,23 @@ class _PropertyFormScreenState extends State<PropertyFormScreen> {
     }
   }
 
+  Future<void> _delete() async {
+    final sure = await showConfirmDelete(
+      context,
+      title: 'Delete ${_old!.name}?',
+      message: "This also deletes all its rooms. Students won't see it anymore. This can't be undone.",
+    );
+    if (!sure || !mounted) return;
+    setState(() => _saving = true);
+    try {
+      await PropertyService().delete(_old);
+      if (mounted) Navigator.pop(context);
+    } catch (_) {
+      if (mounted) await showError(context, "Couldn't delete. Check your internet and try again.");
+      if (mounted) setState(() => _saving = false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
@@ -127,7 +127,7 @@ class _PropertyFormScreenState extends State<PropertyFormScreen> {
             ),
             const SizedBox(height: 28),
 
-            _SectionLabel('Photos', hint: 'Outside, hallway, common areas. The first photo is the cover.'),
+            FormSectionLabel('Photos', hint: 'Outside, hallway, common areas. The first photo is the cover.'),
             PhotoPickerGrid(photos: _photos, onChanged: (p) => setState(() => _photos = p)),
             const SizedBox(height: 24),
 
@@ -139,11 +139,11 @@ class _PropertyFormScreenState extends State<PropertyFormScreen> {
             ),
             const SizedBox(height: 24),
 
-            _SectionLabel('Location', hint: 'Students use this to see how far it is from campus.'),
+            FormSectionLabel('Location', hint: 'Students use this to see how far it is from campus.'),
             _LocationBox(pin: _pin, onTap: _pickLocation),
             const SizedBox(height: 24),
 
-            _SectionLabel('Price range per month', hint: 'Cheapest room to most expensive room.'),
+            FormSectionLabel('Price range per month', hint: 'Cheapest room to most expensive room.'),
             Row(
               children: [
                 Expanded(
@@ -169,37 +169,12 @@ class _PropertyFormScreenState extends State<PropertyFormScreen> {
             ),
             const SizedBox(height: 24),
 
-            _SectionLabel('Tags', hint: 'Tap all that fit.'),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: [
-                for (final tag in _tagChoices)
-                  TagChip(label: tag, selected: _tags.contains(tag), onTap: () => _toggleTag(tag)),
-              ],
-            ),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                Expanded(
-                  child: CupertinoTextField(
-                    controller: _customTag,
-                    placeholder: 'Add your own, like "Curfew 10 PM"',
-                    style: AppText.body,
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: AppColors.card,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    onSubmitted: (_) => _addCustomTag(),
-                  ),
-                ),
-                CupertinoButton(
-                  padding: const EdgeInsets.only(left: 8),
-                  onPressed: _addCustomTag,
-                  child: const Icon(CupertinoIcons.add_circled_solid, size: 32, color: AppColors.teal),
-                ),
-              ],
+            FormSectionLabel('Tags', hint: 'Tap all that fit.'),
+            ChipPicker(
+              options: propertyTagOptions,
+              selected: _tags,
+              onChanged: (t) => setState(() => _tags = t),
+              customPlaceholder: 'Add your own, like "Curfew 10 PM"',
             ),
             const SizedBox(height: 24),
 
@@ -216,6 +191,8 @@ class _PropertyFormScreenState extends State<PropertyFormScreen> {
               loading: _saving,
               onPressed: _save,
             ),
+            if (_old != null)
+              DeleteTextButton(label: 'Delete boarding house', onPressed: _saving ? null : _delete),
           ],
         ),
       ),
@@ -238,28 +215,6 @@ String? checkPropertyForm({
   if (priceMin <= 0 || priceMax <= 0) return 'Prices must be more than ₱0.';
   if (priceMin > priceMax) return 'The "From" price should be lower than the "To" price.';
   return null;
-}
-
-class _SectionLabel extends StatelessWidget {
-  const _SectionLabel(this.title, {required this.hint});
-
-  final String title;
-  final String hint;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(title, style: AppText.label),
-          const SizedBox(height: 2),
-          Text(hint, style: AppText.secondary.copyWith(fontSize: 13)),
-        ],
-      ),
-    );
-  }
 }
 
 /// Small map preview with the pin, or a button to set it.

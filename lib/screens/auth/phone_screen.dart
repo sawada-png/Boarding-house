@@ -6,7 +6,7 @@ import '../../theme/app_colors.dart';
 import '../../theme/app_text_styles.dart';
 import '../../widgets/circle_back_button.dart';
 import '../../widgets/primary_button.dart';
-import '../shared/show_error.dart';
+import '../shared/dialogs.dart';
 import 'code_screen.dart';
 
 /// Type your phone number, then we send an SMS code.

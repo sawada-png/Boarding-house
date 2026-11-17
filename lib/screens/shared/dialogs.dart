@@ -10,7 +10,46 @@ Future<void> showError(
   String message, {
   String title = "Something's not right",
 }) {
-  return showGeneralDialog(
+  return _showCard<void>(
+    context,
+    icon: CupertinoIcons.exclamationmark,
+    title: title,
+    message: message,
+    buttons: (close) => [PrimaryButton(label: 'Got it', onPressed: () => close(null))],
+  );
+}
+
+/// Asks "Are you sure?" before something that can't be undone, like deleting.
+/// Returns true only if the user taps the red button.
+Future<bool> showConfirmDelete(
+  BuildContext context, {
+  required String title,
+  required String message,
+  String confirmLabel = 'Delete',
+}) async {
+  final answer = await _showCard<bool>(
+    context,
+    icon: CupertinoIcons.trash,
+    title: title,
+    message: message,
+    buttons: (close) => [
+      PrimaryButton(label: confirmLabel, color: AppColors.error, onPressed: () => close(true)),
+      const SizedBox(height: 10),
+      PrimaryButton(label: 'Cancel', secondary: true, onPressed: () => close(false)),
+    ],
+  );
+  return answer ?? false;
+}
+
+/// The white rounded popup card both dialogs use.
+Future<T?> _showCard<T>(
+  BuildContext context, {
+  required IconData icon,
+  required String title,
+  required String message,
+  required List<Widget> Function(void Function(T?) close) buttons,
+}) {
+  return showGeneralDialog<T>(
     context: context,
     barrierDismissible: true,
     barrierLabel: 'Close',
@@ -42,11 +81,8 @@ Future<void> showError(
               Container(
                 width: 56,
                 height: 56,
-                decoration: const BoxDecoration(
-                  color: AppColors.errorLight,
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(CupertinoIcons.exclamationmark, color: AppColors.error, size: 28),
+                decoration: const BoxDecoration(color: AppColors.errorLight, shape: BoxShape.circle),
+                child: Icon(icon, color: AppColors.error, size: 28),
               ),
               const SizedBox(height: 16),
               Text(title, textAlign: TextAlign.center, style: AppText.cardTitle.copyWith(fontSize: 19)),
@@ -57,7 +93,7 @@ Future<void> showError(
                 style: AppText.secondary.copyWith(fontSize: 15, height: 1.4),
               ),
               const SizedBox(height: 24),
-              PrimaryButton(label: 'Got it', onPressed: () => Navigator.pop(context)),
+              ...buttons((value) => Navigator.pop(context, value)),
             ],
           ),
         ),

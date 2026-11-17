@@ -7,7 +7,7 @@ import '../../services/user_service.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_text_styles.dart';
 import '../../widgets/primary_button.dart';
-import '../shared/show_error.dart';
+import '../shared/dialogs.dart';
 
 /// Shown once after the first login: your name, and student or landlord.
 class ChooseRoleScreen extends StatefulWidget {

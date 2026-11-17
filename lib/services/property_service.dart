@@ -33,4 +33,19 @@ class PropertyService {
       if (isNew) 'createdAt': FieldValue.serverTimestamp(),
     }, SetOptions(merge: true));
   }
+
+  /// Deletes the boarding house and all its rooms together (all or nothing).
+  Future<void> delete(Property property) async {
+    final rooms = await FirebaseFirestore.instance
+        .collection('rooms')
+        .where('propertyId', isEqualTo: property.id)
+        .where('landlordId', isEqualTo: property.landlordId)
+        .get();
+    final batch = FirebaseFirestore.instance.batch();
+    for (final room in rooms.docs) {
+      batch.delete(room.reference);
+    }
+    batch.delete(_properties.doc(property.id));
+    await batch.commit();
+  }
 }

@@ -5,7 +5,7 @@ import '../../services/auth_service.dart';
 import '../../services/user_service.dart';
 import '../../theme/app_text_styles.dart';
 import '../../widgets/primary_button.dart';
-import '../shared/show_error.dart';
+import '../shared/dialogs.dart';
 
 /// For now: who is logged in, switch mode, and log out. Full profile comes in Week 3.
 class ProfileTab extends StatefulWidget {

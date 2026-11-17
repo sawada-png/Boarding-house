@@ -13,6 +13,7 @@ class PrimaryButton extends StatelessWidget {
     this.loading = false,
     this.secondary = false,
     this.icon,
+    this.color = AppColors.teal,
   });
 
   final String label;
@@ -20,6 +21,9 @@ class PrimaryButton extends StatelessWidget {
   final bool loading;
   final bool secondary;
   final IconData? icon;
+
+  /// Fill color of the main (non-secondary) button. Red for delete buttons.
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +40,7 @@ class PrimaryButton extends StatelessWidget {
           : null,
       child: CupertinoButton(
         padding: EdgeInsets.zero,
-        color: secondary ? null : AppColors.teal,
+        color: secondary ? null : color,
         borderRadius: BorderRadius.circular(14),
         onPressed: loading ? null : onPressed,
         child: loading
