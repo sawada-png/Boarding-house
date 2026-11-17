@@ -1,0 +1,39 @@
+import 'package:cupertino_ui/cupertino_ui.dart';
+
+import '../../widgets/bm_tab_scaffold.dart';
+import '../shared/placeholder_tab.dart';
+import 'home_tab.dart';
+
+/// Student mode: the five bottom tabs.
+class TenantShell extends StatelessWidget {
+  const TenantShell({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BmTabScaffold(
+      tabs: [
+        BmTab(icon: CupertinoIcons.house, label: 'Home', builder: (_) => const HomeTab()),
+        BmTab(
+          icon: CupertinoIcons.map,
+          label: 'Map',
+          builder: (_) => const PlaceholderTab(title: 'Map', comingIn: 'Week 2'),
+        ),
+        BmTab(
+          icon: CupertinoIcons.heart,
+          label: 'Saved',
+          builder: (_) => const PlaceholderTab(title: 'Saved', comingIn: 'Week 2'),
+        ),
+        BmTab(
+          icon: CupertinoIcons.chat_bubble,
+          label: 'Messages',
+          builder: (_) => const PlaceholderTab(title: 'Messages', comingIn: 'Week 3'),
+        ),
+        BmTab(
+          icon: CupertinoIcons.person,
+          label: 'Profile',
+          builder: (_) => const PlaceholderTab(title: 'Profile', comingIn: 'Week 3'),
+        ),
+      ],
+    );
+  }
+}
