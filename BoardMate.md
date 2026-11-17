@@ -147,7 +147,7 @@ Tenant and landlord both tap "moved out" (auto after 3 days if one forgets) → 
 ## Data (what the database stores)
 - **User:** name, phone, login type (phone / Google / Facebook), school, role (student / landlord), verified yes/no
 - **Property:** landlord, name, location (map pin), photos, price range, tags, description
-- **Room:** property, photos, monthly price, what's included, private/shared CR, available/taken
+- **Room:** property, name (Room 1), type (bedspace for 2–6 / solo), photos, monthly price, what's included, private/shared CR, available/taken
 - **Stay:** tenant, room, move-in date, move-out date, moved-out confirmed by tenant / landlord (proof for reviews)
 - **Review:** who wrote it, about whom, stars, comment, landlord reply
 - **Message:** from, to, text, time
@@ -161,6 +161,40 @@ Tenant and landlord both tap "moved out" (auto after 3 days if one forgets) → 
 - **Week 4:** fix bugs, test with 2–3 real landlords, publish to Play Store
 
 **Not doing in Version 1:** payments, rent reminders, ads, ID verification, customer service, iPhone release (Android first)
+
+## Progress
+Code: https://github.com/sawada-png/Boarding-house
+
+**Week 1: done (Nov 17, 2026)**
+- [x] Flutter + Firebase set up (project `boardmate-17cf9`, Firestore in Singapore)
+- [x] Login: phone SMS code + Google (Facebook button is there, setup later)
+- [x] Choose role: student or landlord ("Switch mode" in Profile)
+- [x] Landlord adds / edits / deletes a boarding house (photos, map pin, price range, tags)
+- [x] Landlord adds / edits / deletes rooms (photos, type, price, CR, what's included, available)
+- [x] Landlord dashboard: available / taken / rooms count + "How students see your place"
+
+**Changes from the plan (and why)**
+- Photos are stored on **Cloudinary** (free), not Firebase Storage, because Firebase Storage needs the paid Blaze plan.
+- Rooms got a **name** and **type** (bedspace for 2–6 people, or solo room).
+- Built and tested on the web (localhost, phone-sized) first; Android build later.
+- Popups and buttons use a BoardMate style, not plain iPhone defaults.
+
+**To do before launch**
+- [ ] Facebook login (needs a Meta developer app)
+- [ ] Real SMS codes (needs Blaze plan; test number works now: +63 912 345 6789, code 123456)
+- [ ] Deleting a photo doesn't remove it from Cloudinary yet
+
+**Week 2: next**
+- [ ] Home list with real boarding houses, sorted by distance to your school
+- [ ] Pick your school (PSU Tiniguiban, WPU PPC, Holy Trinity)
+- [ ] Listing page with photo gallery, map and room tabs
+- [ ] Search + filters (price, girls/boys only, Wi-Fi, no curfew, has rooms available)
+- [ ] Map tab with pins
+
+**How to run the app**
+1. Open the `Boarding-house` folder in Cursor, open a terminal
+2. Type `flutter run -d web-server --web-port 8080`
+3. Open http://localhost:8080 in Chrome
 
 ## Why I'm building this
 - Learn app development using AI
