@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Chat with landlord</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<style>
+body{margin:0}
+a{color:#0B7285}a:hover{color:#095C6B}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; position: relative; overflow: hidden; background: #FFFFFF; font-family: Inter, system-ui, sans-serif; color: #1C1C1E; display: flex; flex-direction: column">
+<header style="padding: 52px 12px 12px; border-bottom: 0.5px solid #D1D1D6; display: flex; align-items: center; gap: 10px">
+<a href="Listing.dc.html" aria-label="Back" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; color: #0B7285">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></a>
+<div style="width: 40px; height: 40px; border-radius: 20px; background: #DCEFF2; color: #0B7285; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700">N</div>
+<div style="flex: 1; display: flex; flex-direction: column; gap: 2px">
+<div style="display: flex; align-items: center; gap: 4px; font-size: 16px; font-weight: 700">Nathan
+<svg width="16" height="16" viewBox="0 0 24 24" role="img" aria-label="Verified landlord"><circle cx="12" cy="12" r="10" fill="#0B7285"/><path d="m8 12.5 2.8 2.8L16.5 9" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</div>
+<div style="font-size: 13px; color: #6B6B70">Landlord · usually replies in 1 hour</div>
+</div>
+<button aria-label="Call" style="width: 44px; height: 44px; border: 0; background: none; color: #0B7285; display: flex; align-items: center; justify-content: center">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg></button>
+</header>
+<div style="flex: 1; padding: 16px; display: flex; flex-direction: column; gap: 10px; background: #FFFFFF">
+<div style="display: flex; gap: 12px; align-items: center; padding: 10px; border-radius: 14px; background: #F2F2F7">
+<div style="width: 52px; height: 52px; border-radius: 10px; background: #E4DCCF; flex-shrink: 0"></div>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<div style="font-size: 14px; font-weight: 600">Room 1 · Nathan's Boarding House</div>
+<div style="font-size: 13px; color: #6B6B70">₱3,500 / month · <span style="color: #0B5F6E; font-weight: 600">Available</span></div>
+</div>
+</div>
+<div style="align-self: center; font-size: 12px; color: #6B6B70; margin: 6px 0">Today 9:41 AM</div>
+<div style="align-self: flex-end; max-width: 75%; padding: 10px 14px; border-radius: 20px 20px 6px 20px; background: #0B7285; color: #FFFFFF; font-size: 16px; line-height: 1.35">Hi! Is Room 1 still available for this semester?</div>
+<div style="align-self: flex-start; max-width: 75%; padding: 10px 14px; border-radius: 20px 20px 20px 6px; background: #E9E9EB; font-size: 16px; line-height: 1.35">Yes, still available. You can visit anytime after 4 PM.</div>
+<div style="align-self: flex-end; max-width: 75%; padding: 10px 14px; border-radius: 20px 20px 6px 20px; background: #0B7285; color: #FFFFFF; font-size: 16px; line-height: 1.35">Great, can I visit tomorrow?</div>
+<div style="margin-top: auto; display: flex; gap: 8px; flex-wrap: wrap">
+<button style="height: 34px; padding: 0 12px; border-radius: 17px; border: 1px solid #B9DDE3; background: #FFFFFF; color: #0B5F6E; font: 500 14px Inter, sans-serif">Is water included?</button>
+<button style="height: 34px; padding: 0 12px; border-radius: 17px; border: 1px solid #B9DDE3; background: #FFFFFF; color: #0B5F6E; font: 500 14px Inter, sans-serif">Send location</button>
+</div>
+</div>
+<div style="padding: 10px 12px 34px; border-top: 0.5px solid #D1D1D6; display: flex; gap: 8px; align-items: center">
+<label style="flex: 1; display: flex; align-items: center; height: 40px; padding: 0 14px; border-radius: 20px; border: 1px solid #D1D1D6">
+<span style="position: absolute; left: -9999px">Message</span>
+<input placeholder="Message" style="flex: 1; border: 0; background: none; outline: none; font: 400 16px Inter, sans-serif; color: #1C1C1E">
+</label>
+<button aria-label="Send" style="width: 40px; height: 40px; border-radius: 20px; border: 0; background: #0B7285; color: #FFFFFF; display: flex; align-items: center; justify-content: center">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

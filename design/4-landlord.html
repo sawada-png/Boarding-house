@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Landlord mode</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<style>
+body{margin:0}
+a{color:#0B7285}a:hover{color:#095C6B}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; position: relative; overflow: hidden; background: #F2F2F7; font-family: Inter, system-ui, sans-serif; color: #1C1C1E">
+<div style="padding: 56px 20px 0; display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<div style="font-size: 13px; font-weight: 600; color: #0B5F6E; letter-spacing: 0.4px">LANDLORD MODE</div>
+<h1 style="margin: 0; font-size: 30px; font-weight: 800; letter-spacing: -0.7px">Nathan's Boarding House</h1>
+</div>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px">
+<div style="padding: 14px; border-radius: 16px; background: #FFFFFF; display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 24px; font-weight: 800">3</span><span style="font-size: 13px; color: #6B6B70">Available</span></div>
+<div style="padding: 14px; border-radius: 16px; background: #FFFFFF; display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 24px; font-weight: 800">2</span><span style="font-size: 13px; color: #6B6B70">Taken</span></div>
+<div style="padding: 14px; border-radius: 16px; background: #FFFFFF; display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 24px; font-weight: 800">4</span><span style="font-size: 13px; color: #6B6B70">New messages</span></div>
+</div>
+<div style="padding: 16px; border-radius: 18px; background: #0B7285; color: #FFFFFF; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<div style="font-size: 13px; font-weight: 600; opacity: 0.85">Weekly check</div>
+<div style="font-size: 18px; font-weight: 700">Is Room 4 still available?</div>
+</div>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
+<button style="height: 44px; border: 0; border-radius: 12px; background: #FFFFFF; color: #0B5F6E; font: 600 15px Inter, sans-serif">Yes, available</button>
+<button style="height: 44px; border: 1px solid rgba(255,255,255,0.6); border-radius: 12px; background: none; color: #FFFFFF; font: 600 15px Inter, sans-serif">No, it's taken</button>
+</div>
+</div>
+<div style="display: flex; justify-content: space-between; align-items: baseline">
+<h2 style="margin: 0; font-size: 20px; font-weight: 700">Rooms</h2>
+<a href="#" style="font-size: 15px; font-weight: 600; text-decoration: none">+ Add room</a>
+</div>
+<div style="border-radius: 16px; background: #FFFFFF; overflow: hidden">
+<div style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: 0.5px solid #E3E3E8">
+<div style="width: 44px; height: 44px; border-radius: 10px; background: #E4DCCF; flex-shrink: 0"></div>
+<div style="flex: 1; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 16px; font-weight: 600">Room 1</span><span style="font-size: 13px; color: #6B6B70">₱3,500 · bedspace for 2</span></div>
+<span style="padding: 4px 10px; border-radius: 8px; background: #DCEFF2; color: #0B5F6E; font-size: 13px; font-weight: 600">Available</span>
+</div>
+<div style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: 0.5px solid #E3E3E8">
+<div style="width: 44px; height: 44px; border-radius: 10px; background: #E4DCCF; flex-shrink: 0"></div>
+<div style="flex: 1; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 16px; font-weight: 600">Room 2</span><span style="font-size: 13px; color: #6B6B70">₱4,500 · solo room</span></div>
+<span style="padding: 4px 10px; border-radius: 8px; background: #DCEFF2; color: #0B5F6E; font-size: 13px; font-weight: 600">Available</span>
+</div>
+<div style="display: flex; align-items: center; gap: 12px; padding: 12px 16px">
+<div style="width: 44px; height: 44px; border-radius: 10px; background: #E4DCCF; flex-shrink: 0"></div>
+<div style="flex: 1; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 16px; font-weight: 600">Room 3</span><span style="font-size: 13px; color: #6B6B70">₱3,000 · bedspace for 4</span></div>
+<span style="padding: 4px 10px; border-radius: 8px; background: #E9E9EB; color: #48484A; font-size: 13px; font-weight: 600">Taken</span>
+</div>
+</div>
+</div>
+<nav style="position: absolute; left: 0; right: 0; bottom: 0; height: 84px; box-sizing: border-box; padding: 8px 12px 0; background: rgba(255,255,255,0.92); border-top: 0.5px solid #D1D1D6; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr))">
+<a href="#" style="display: flex; flex-direction: column; align-items: center; gap: 3px; color: #0B7285; text-decoration: none; font-size: 11px; font-weight: 600">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Dashboard</a>
+<a href="#" style="display: flex; flex-direction: column; align-items: center; gap: 3px; color: #6B6B70; text-decoration: none; font-size: 11px; font-weight: 500">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14.5a6.5 6.5 0 0 1 3.5 5.5"/></svg>Tenants</a>
+<a href="Chat.dc.html" style="display: flex; flex-direction: column; align-items: center; gap: 3px; color: #6B6B70; text-decoration: none; font-size: 11px; font-weight: 500">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg>Messages</a>
+<a href="#" style="display: flex; flex-direction: column; align-items: center; gap: 3px; color: #6B6B70; text-decoration: none; font-size: 11px; font-weight: 500">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Profile</a>
+</nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

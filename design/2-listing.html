@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Listing and room tabs</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<style>
+body{margin:0}
+a{color:#0B7285}a:hover{color:#095C6B}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; position: relative; overflow: hidden; background: #FFFFFF; font-family: Inter, system-ui, sans-serif; color: #1C1C1E">
+<div style="position: relative; height: 300px; background: #CFE3E7; display: flex; align-items: center; justify-content: center; color: #3E6B73; font-size: 13px; font-weight: 500">Photo gallery · hallway, outside, common area
+<a href="Main.dc.html" aria-label="Back" style="position: absolute; top: 52px; left: 16px; width: 40px; height: 40px; border-radius: 20px; background: rgba(255,255,255,0.9); display: flex; align-items: center; justify-content: center; color: #1C1C1E">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></a>
+<button aria-label="Save" style="position: absolute; top: 52px; right: 16px; width: 40px; height: 40px; border-radius: 20px; border: 0; background: rgba(255,255,255,0.9); display: flex; align-items: center; justify-content: center; color: #1C1C1E">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg></button>
+<div style="position: absolute; bottom: 36px; right: 16px; padding: 4px 10px; border-radius: 10px; background: rgba(28,28,30,0.7); color: #FFFFFF; font-size: 12px; font-weight: 600">1 / 8</div>
+</div>
+<div style="position: absolute; top: 276px; left: 0; right: 0; bottom: 0; background: #FFFFFF; border-radius: 24px 24px 0 0; padding: 20px 20px 0; display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<h1 style="margin: 0; font-size: 26px; font-weight: 800; letter-spacing: -0.5px">Nathan's Boarding House</h1>
+<div style="display: flex; align-items: center; gap: 6px; font-size: 14px; color: #6B6B70">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="#F5A524" aria-hidden="true"><path d="m12 2.5 2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z"/></svg>
+<span style="color: #1C1C1E; font-weight: 600">4.8</span> · <a href="#" style="text-decoration: underline; color: #1C1C1E">32 reviews</a> · 450 m from PSU
+</div>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 6px">
+<span style="padding: 6px 10px; border-radius: 8px; background: #F2F2F7; font-size: 13px; font-weight: 500">Wi-Fi</span>
+<span style="padding: 6px 10px; border-radius: 8px; background: #F2F2F7; font-size: 13px; font-weight: 500">Girls only</span>
+<span style="padding: 6px 10px; border-radius: 8px; background: #F2F2F7; font-size: 13px; font-weight: 500">Curfew 10 PM</span>
+<span style="padding: 6px 10px; border-radius: 8px; background: #F2F2F7; font-size: 13px; font-weight: 500">Water included</span>
+<span style="padding: 6px 10px; border-radius: 8px; background: #F2F2F7; font-size: 13px; font-weight: 500">Shared kitchen</span>
+</div>
+<div style="display: flex; justify-content: space-between; align-items: baseline">
+<h2 style="margin: 0; font-size: 20px; font-weight: 700">Rooms</h2>
+<span style="font-size: 14px; color: #0B5F6E; font-weight: 600">3 of 5 available</span>
+</div>
+<div role="tablist" aria-label="Rooms" style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 2px; padding: 2px; background: #EEEEF0; border-radius: 10px">
+<button role="tab" aria-selected="true" style="height: 34px; border: 0; border-radius: 8px; background: #FFFFFF; box-shadow: 0 1px 3px rgba(0,0,0,0.12); font: 600 13px Inter, sans-serif; color: #1C1C1E">Room 1</button>
+<button role="tab" aria-selected="false" style="height: 34px; border: 0; border-radius: 8px; background: none; font: 500 13px Inter, sans-serif; color: #1C1C1E">Room 2</button>
+<button role="tab" aria-selected="false" style="height: 34px; border: 0; border-radius: 8px; background: none; font: 500 13px Inter, sans-serif; color: #6B6B70">Room 3</button>
+<button role="tab" aria-selected="false" style="height: 34px; border: 0; border-radius: 8px; background: none; font: 500 13px Inter, sans-serif; color: #1C1C1E">Room 4</button>
+</div>
+<div style="display: flex; gap: 12px">
+<div style="width: 112px; height: 112px; flex-shrink: 0; border-radius: 14px; background: #E4DCCF; display: flex; align-items: center; justify-content: center; text-align: center; color: #6E5E45; font-size: 12px; font-weight: 500">Room photos</div>
+<div style="display: flex; flex-direction: column; gap: 6px; min-width: 0">
+<div style="display: flex; align-items: center; gap: 8px">
+<span style="font-size: 17px; font-weight: 700">Room 1</span>
+<span style="padding: 3px 8px; border-radius: 8px; background: #DCEFF2; color: #0B5F6E; font-size: 12px; font-weight: 600">Available</span>
+</div>
+<div style="font-size: 14px; color: #6B6B70; line-height: 1.45">Bedspace for 2 · own CR · study table, electric fan, cabinet</div>
+<div style="font-size: 15px; font-weight: 700">₱3,500 <span style="font-weight: 400; color: #6B6B70">/ month per person</span></div>
+</div>
+</div>
+</div>
+<div style="position: absolute; left: 0; right: 0; bottom: 0; height: 96px; box-sizing: border-box; padding: 14px 20px 0; background: #FFFFFF; border-top: 0.5px solid #D1D1D6; display: flex; gap: 10px; align-items: flex-start">
+<div style="flex: 1; display: flex; flex-direction: column">
+<span style="font-size: 17px; font-weight: 700">₱3,000–4,500</span>
+<span style="font-size: 13px; color: #6B6B70">per month</span>
+</div>
+<button aria-label="Call landlord" style="width: 50px; height: 50px; border-radius: 14px; border: 1px solid #D1D1D6; background: #FFFFFF; color: #1C1C1E; display: flex; align-items: center; justify-content: center">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg></button>
+<a href="Chat.dc.html" style="height: 50px; padding: 0 22px; border-radius: 14px; background: #0B7285; color: #FFFFFF; display: flex; align-items: center; text-decoration: none; font-size: 16px; font-weight: 600">Message</a>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>
