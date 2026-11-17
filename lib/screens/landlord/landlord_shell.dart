@@ -4,6 +4,7 @@ import '../../models/app_user.dart';
 import '../../widgets/bm_tab_scaffold.dart';
 import '../shared/placeholder_tab.dart';
 import '../shared/profile_tab.dart';
+import 'dashboard_tab.dart';
 
 /// Landlord mode: the four bottom tabs from the landlord mockup.
 class LandlordShell extends StatelessWidget {
@@ -18,7 +19,7 @@ class LandlordShell extends StatelessWidget {
         BmTab(
           icon: CupertinoIcons.square_grid_2x2,
           label: 'Dashboard',
-          builder: (_) => const PlaceholderTab(title: 'Dashboard', comingIn: 'Step 5'),
+          builder: (_) => DashboardTab(profile: profile),
         ),
         BmTab(
           icon: CupertinoIcons.person_2,

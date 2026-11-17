@@ -14,7 +14,7 @@ class ListingCard extends StatelessWidget {
     required this.name,
     required this.subtitle,
     required this.priceText,
-    required this.roomsAvailable,
+    this.roomsAvailable,
     this.photoUrl,
     this.rating,
     this.reviewCount = 0,
@@ -28,7 +28,8 @@ class ListingCard extends StatelessWidget {
 
   /// For example "₱3,000–4,500".
   final String priceText;
-  final int roomsAvailable;
+  /// Null hides the rooms badge (for example before any rooms are added).
+  final int? roomsAvailable;
   final String? photoUrl;
 
   /// Null when the place has no reviews yet.
@@ -73,12 +74,11 @@ class ListingCard extends StatelessWidget {
                           ),
                         ),
                       ),
-                      StatusBadge(
-                        label: roomsAvailable == 0
-                            ? 'Full'
-                            : '$roomsAvailable room${roomsAvailable == 1 ? '' : 's'} available',
-                        muted: roomsAvailable == 0,
-                      ),
+                      if (roomsAvailable case final n?)
+                        StatusBadge(
+                          label: n == 0 ? 'Full' : '$n room${n == 1 ? '' : 's'} available',
+                          muted: n == 0,
+                        ),
                     ],
                   ),
                 ],
