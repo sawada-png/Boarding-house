@@ -1,5 +1,6 @@
 ﻿import 'package:cupertino_ui/cupertino_ui.dart';
 
+import '../../models/app_user.dart';
 import '../../widgets/bm_tab_scaffold.dart';
 import '../shared/placeholder_tab.dart';
 import '../shared/profile_tab.dart';
@@ -7,7 +8,9 @@ import 'home_tab.dart';
 
 /// Student mode: the five bottom tabs.
 class TenantShell extends StatelessWidget {
-  const TenantShell({super.key});
+  const TenantShell({super.key, required this.profile});
+
+  final AppUser profile;
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +35,7 @@ class TenantShell extends StatelessWidget {
         BmTab(
           icon: CupertinoIcons.person,
           label: 'Profile',
-          builder: (_) => const ProfileTab(),
+          builder: (_) => ProfileTab(profile: profile),
         ),
       ],
     );

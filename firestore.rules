@@ -1,0 +1,48 @@
+rules_version = '2';
+
+// Who can read and change what in the database.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isMe(uid) {
+      return signedIn() && request.auth.uid == uid;
+    }
+
+    // One document per user. Only you can see and change your own.
+    match /users/{uid} {
+      allow read: if isMe(uid);
+      allow create: if isMe(uid)
+        && request.resource.data.role in ['student', 'landlord']
+        && request.resource.data.verified == false;
+      allow update: if isMe(uid)
+        && request.resource.data.role in ['student', 'landlord']
+        // Only BoardMate staff (not the app) may mark someone verified.
+        && request.resource.data.verified == resource.data.verified;
+      allow delete: if false;
+    }
+
+    // Boarding houses. Any logged-in user can view; only the owner can change.
+    match /properties/{propertyId} {
+      allow read: if signedIn();
+      allow create: if signedIn() && request.resource.data.landlordId == request.auth.uid;
+      allow update: if signedIn()
+        && resource.data.landlordId == request.auth.uid
+        && request.resource.data.landlordId == request.auth.uid;
+      allow delete: if signedIn() && resource.data.landlordId == request.auth.uid;
+    }
+
+    // Rooms inside a boarding house. Same rule as properties.
+    match /rooms/{roomId} {
+      allow read: if signedIn();
+      allow create: if signedIn() && request.resource.data.landlordId == request.auth.uid;
+      allow update: if signedIn()
+        && resource.data.landlordId == request.auth.uid
+        && request.resource.data.landlordId == request.auth.uid;
+      allow delete: if signedIn() && resource.data.landlordId == request.auth.uid;
+    }
+  }
+}

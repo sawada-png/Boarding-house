@@ -2,6 +2,7 @@ import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'package:boardmate/models/app_user.dart';
 import 'package:boardmate/screens/tenant/tenant_shell.dart';
 import 'package:boardmate/widgets/room_tabs.dart';
 
@@ -9,7 +10,9 @@ void main() {
   // Tests run offline, so don't download the Inter font.
   setUpAll(() => GoogleFonts.config.allowRuntimeFetching = false);
 
-  Widget app() => const CupertinoApp(home: TenantShell());
+  Widget app() => const CupertinoApp(
+        home: TenantShell(profile: AppUser(uid: 'u1', name: 'Test', role: UserRole.student)),
+      );
 
   testWidgets('Home shows the title, a listing and the tab bar', (tester) async {
     await tester.pumpWidget(app());
