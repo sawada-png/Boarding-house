@@ -18,6 +18,8 @@ abstract final class AppColors {
   static const takenFill = Color(0xFFE9E9EB);
   static const takenText = Color(0xFF48484A);
   static const star = Color(0xFFF5A524);
+  static const error = Color(0xFFD64545);
+  static const errorLight = Color(0xFFFDECEC);
 
   // Placeholder colors shown before a photo is uploaded.
   static const photoTeal = Color(0xFFCFE3E7);
