@@ -185,13 +185,16 @@ Code: https://github.com/sawada-png/Boarding-house
 - [ ] Deleting a photo doesn't remove it from Cloudinary yet
 - [ ] Switch map tiles from free OpenStreetMap to MapTiler / Mapbox / Stadia (OSM rules: not for big apps)
 
-**Week 2: next**
-- [ ] Home list with real boarding houses, sorted by distance to your school
-- [ ] Pick your school (PSU Tiniguiban, WPU PPC, Holy Trinity)
-- [ ] Listing page with photo gallery, map and room tabs
-- [ ] Search + filters (price, girls/boys only, Wi-Fi, no curfew, has rooms available)
-- [ ] Map tab with pins
-- [ ] Saved: tap a heart to save a place, see them in the Saved tab
+**Week 2: done (Nov 18, 2026)** — plus the whole BoardMate 2.0 redesign (see DESIGN.md)
+- [x] Home with a live header, houses within a 20-minute walk of your school, sorted by walk time
+- [x] Pick your school (PSU, WPU, Holy Trinity)
+- [x] House page with photos, Room Map by floor, room sheet with the real monthly cost, map
+- [x] Search + filters (price, girls/boys only, Wi-Fi, no curfew, open rooms only)
+- [x] Map with price pins
+- [x] Saved (heart) + Share
+- [x] Landlord: Room Map with one-tap open/taken, room bills + move-in terms, save count
+
+**Week 3: next** — chat + call button, move in/out, reviews (verified stays only)
 
 **How to run the app**
 1. Open the `Boarding-house` folder in Cursor, open a terminal
