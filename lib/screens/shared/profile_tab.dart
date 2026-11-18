@@ -3,8 +3,12 @@ import 'package:cupertino_ui/cupertino_ui.dart';
 import '../../models/app_user.dart';
 import '../../services/auth_service.dart';
 import '../../services/user_service.dart';
+import '../../theme/app_colors.dart';
 import '../../theme/app_text_styles.dart';
+import '../../widgets/bm_tab_scaffold.dart';
 import '../../widgets/primary_button.dart';
+import '../../widgets/rounded_card.dart';
+import '../../widgets/status_badge.dart';
 import '../shared/dialogs.dart';
 
 /// For now: who is logged in, switch mode, and log out. Full profile comes in Week 3.
@@ -36,31 +40,70 @@ class _ProfileTabState extends State<ProfileTab> {
   Widget build(BuildContext context) {
     final p = widget.profile;
     final contact = p.phone ?? p.email ?? '';
+    final initial = p.name.trim().isEmpty ? '?' : p.name.trim()[0].toUpperCase();
 
     return CupertinoPageScaffold(
       child: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 24, 20, 120),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(p.name, style: AppText.largeTitle),
-              const SizedBox(height: 8),
-              Text(
-                '${p.isLandlord ? 'Landlord' : 'Student'}${contact.isEmpty ? '' : ' · $contact'}',
-                style: AppText.secondary,
+        bottom: false,
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(20, 8, 20, BmTabScaffold.bottomSpace),
+          children: [
+            Text('Profile', style: AppText.largeTitle),
+            const SizedBox(height: 20),
+            RoundedCard(
+              padding: const EdgeInsets.all(18),
+              child: Row(
+                children: [
+                  Container(
+                    width: 60,
+                    height: 60,
+                    alignment: Alignment.center,
+                    decoration: const BoxDecoration(color: AppColors.lagoonLight, shape: BoxShape.circle),
+                    child: Text(initial, style: AppText.title.copyWith(color: AppColors.lagoonDark)),
+                  ),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(p.name, style: AppText.cardTitle),
+                        if (contact.isNotEmpty) ...[const SizedBox(height: 2), Text(contact, style: AppText.secondary)],
+                        const SizedBox(height: 8),
+                        StatusBadge(label: p.isLandlord ? 'Landlord mode' : 'Student'),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-              const Spacer(),
-              PrimaryButton(
-                label: p.isLandlord ? 'Switch to Student mode' : 'Switch to Landlord mode',
-                loading: _switching,
-                onPressed: _switchMode,
+            ),
+            const SizedBox(height: 16),
+            RoundedCard(
+              shadow: false,
+              padding: const EdgeInsets.all(18),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(p.isLandlord ? 'Looking for a room?' : 'Do you own a boarding house?', style: AppText.section),
+                  const SizedBox(height: 4),
+                  Text(
+                    p.isLandlord
+                        ? 'Switch to Student mode to browse boarding houses.'
+                        : 'Switch to Landlord mode to list it and its rooms for free.',
+                    style: AppText.secondary,
+                  ),
+                  const SizedBox(height: 14),
+                  PrimaryButton(
+                    label: p.isLandlord ? 'Switch to Student mode' : 'Switch to Landlord mode',
+                    icon: CupertinoIcons.arrow_2_squarepath,
+                    loading: _switching,
+                    onPressed: _switchMode,
+                  ),
+                ],
               ),
-              const SizedBox(height: 12),
-              PrimaryButton(label: 'Log out', secondary: true, onPressed: AuthService().signOut),
-              const SizedBox(height: 90), // keep above the tab bar
-            ],
-          ),
+            ),
+            const SizedBox(height: 16),
+            PrimaryButton(label: 'Log out', secondary: true, onPressed: AuthService().signOut),
+          ],
         ),
       ),
     );

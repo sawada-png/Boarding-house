@@ -30,6 +30,7 @@ class Property {
     this.area = '',
     this.saveCount = 0,
     this.updatedAt,
+    this.lastConfirmedAt,
   });
 
   /// Empty until it's saved the first time.
@@ -57,6 +58,9 @@ class Property {
   /// When the landlord last saved the house. Null until the server sets it.
   final DateTime? updatedAt;
 
+  /// When the landlord last saved the house or saved/switched a room: proof the listing is current.
+  final DateTime? lastConfirmedAt;
+
   /// "Mandaragat · Puerto Princesa", or just "Puerto Princesa".
   String get place => area.isEmpty ? 'Puerto Princesa' : '$area · Puerto Princesa';
 
@@ -77,6 +81,7 @@ class Property {
       area: d['area'] as String? ?? '',
       saveCount: (d['saveCount'] as num?)?.toInt() ?? 0,
       updatedAt: (d['updatedAt'] as Timestamp?)?.toDate(),
+      lastConfirmedAt: (d['lastConfirmedAt'] as Timestamp?)?.toDate(),
     );
   }
 

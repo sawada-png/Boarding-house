@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:boardmate/models/room.dart';
+import 'package:boardmate/screens/landlord/room_costs_card.dart';
 import 'package:boardmate/screens/landlord/room_form_screen.dart';
 
 void main() {
@@ -47,5 +48,48 @@ void main() {
     expect(checkRoomForm(name: 'Room 1', photoCount: 0, price: 3500), isNotNull);
     expect(checkRoomForm(name: 'Room 1', photoCount: 1, price: null), isNotNull);
     expect(checkRoomForm(name: 'Room 1', photoCount: 1, price: 0), isNotNull);
+  });
+
+  test('Room form checks the bill amounts only when they are needed', () {
+    expect(checkRoomForm(name: 'Room 1', photoCount: 1, price: 3500, electricityEstimate: null), isNotNull);
+    expect(checkRoomForm(name: 'Room 1', photoCount: 1, price: 3500, wifiPrice: 0), isNotNull);
+    expect(checkRoomForm(name: 'Room 1', photoCount: 1, price: 3500, electricityEstimate: 400, wifiPrice: 150), isNull);
+  });
+
+  test('About ₱X /mo adds own-meter electricity and paid Wi-Fi to the rent', () {
+    const base = Room(propertyId: 'p', landlordId: 'l', name: 'R', type: RoomType.solo, monthlyPrice: 3500);
+    expect(base.estimatedMonthly, 3500); // old rooms: bills included, no Wi-Fi
+    const withBills = Room(
+      propertyId: 'p',
+      landlordId: 'l',
+      name: 'R',
+      type: RoomType.solo,
+      monthlyPrice: 3500,
+      electricity: ElectricityCost.ownMeter,
+      electricityEstimate: 400,
+      water: WaterCost.separate,
+      wifi: WifiCost.paid,
+      wifiPrice: 150,
+    );
+    expect(withBills.estimatedMonthly, 4050); // like the mockup
+    expect(withBills.toMap()['electricity'], 'ownMeter');
+    expect(withBills.toMap()['wifiPrice'], 150);
+    // A price typed for a bill that's switched back to "included" isn't saved.
+    const switchedBack = Room(
+      propertyId: 'p',
+      landlordId: 'l',
+      name: 'R',
+      type: RoomType.solo,
+      monthlyPrice: 3500,
+      electricityEstimate: 400,
+      wifiPrice: 150,
+    );
+    expect(switchedBack.estimatedMonthly, 3500);
+    expect(switchedBack.toMap()['electricityEstimate'], 0);
+  });
+
+  test('Move-in terms shorten to fit the form row', () {
+    expect(shortMoveIn('1 month deposit + 1 month advance'), '1 deposit + 1 advance');
+    expect(shortMoveIn('2 months deposit + 1 month advance'), '2 deposit + 1 advance');
   });
 }

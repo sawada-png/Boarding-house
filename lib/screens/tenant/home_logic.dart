@@ -48,7 +48,7 @@ Map<String, HouseRooms> roomsByHouse(Iterable<Room> rooms) {
 
 /// When the landlord last confirmed anything: the house or any of its rooms.
 DateTime? lastChecked(Property p, HouseRooms? rooms) {
-  final a = p.updatedAt;
+  final a = p.lastConfirmedAt ?? p.updatedAt;
   final b = rooms?.lastUpdate;
   if (a == null) return b;
   if (b == null) return a;

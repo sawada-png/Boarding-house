@@ -6,7 +6,9 @@ import '../../services/auth_service.dart';
 import '../../services/user_service.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_text_styles.dart';
+import '../../widgets/labeled_field.dart';
 import '../../widgets/primary_button.dart';
+import '../../widgets/wordmark.dart';
 import '../shared/dialogs.dart';
 
 /// Shown once after the first login: your name, and student or landlord.
@@ -53,19 +55,17 @@ class _ChooseRoleScreenState extends State<ChooseRoleScreen> {
         child: ListView(
           padding: const EdgeInsets.fromLTRB(20, 32, 20, 24),
           children: [
-            Text('Welcome!', style: AppText.largeTitle),
+            const Wordmark(),
+            const SizedBox(height: 24),
+            Text('Welcome!', style: AppText.largeTitle.copyWith(fontSize: 40, letterSpacing: -1.3)),
             const SizedBox(height: 8),
-            Text('Tell us a bit about you.', style: AppText.secondary.copyWith(fontSize: 16)),
+            Text('Tell us a bit about you.', style: AppText.secondary.copyWith(fontSize: 15)),
             const SizedBox(height: 28),
-            Text('Your name', style: AppText.label),
-            const SizedBox(height: 8),
-            CupertinoTextField(
+            LabeledField(
+              label: 'Your name',
               controller: _name,
               placeholder: 'Juan Dela Cruz',
               textCapitalization: TextCapitalization.words,
-              style: AppText.body,
-              padding: const EdgeInsets.all(14),
-              decoration: BoxDecoration(color: AppColors.card, borderRadius: BorderRadius.circular(12)),
             ),
             const SizedBox(height: 28),
             Text('I am a...', style: AppText.label),
@@ -125,10 +125,10 @@ class _RoleCard extends StatelessWidget {
         onTap: onTap,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 150),
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(18),
           decoration: BoxDecoration(
             color: AppColors.card,
-            borderRadius: BorderRadius.circular(18),
+            borderRadius: BorderRadius.circular(24),
             border: Border.all(color: selected ? AppColors.lagoon : AppColors.card, width: 2),
           ),
           child: Row(
@@ -138,7 +138,7 @@ class _RoleCard extends StatelessWidget {
                 height: 48,
                 decoration: BoxDecoration(
                   color: selected ? AppColors.lagoon : AppColors.lagoonLight,
-                  borderRadius: BorderRadius.circular(14),
+                  shape: BoxShape.circle,
                 ),
                 child: Icon(icon, color: selected ? AppColors.card : AppColors.lagoon),
               ),

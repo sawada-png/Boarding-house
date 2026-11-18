@@ -59,9 +59,9 @@ class _CodeScreenState extends State<CodeScreen> {
             children: [
               const CircleBackButton(),
               const SizedBox(height: 20),
-              Text('Enter the code', style: AppText.largeTitle.copyWith(fontSize: 30)),
+              Text('Enter the code', style: AppText.largeTitle),
               const SizedBox(height: 8),
-              Text('Sent to ${widget.phone}', style: AppText.secondary),
+              Text('Sent to ${widget.phone}', style: AppText.secondary.copyWith(fontSize: 15)),
               const SizedBox(height: 24),
               CupertinoTextField(
                 controller: _controller,
@@ -73,8 +73,8 @@ class _CodeScreenState extends State<CodeScreen> {
                 placeholder: '123456',
                 textAlign: TextAlign.center,
                 style: AppText.body.copyWith(fontSize: 28, letterSpacing: 8),
-                padding: const EdgeInsets.all(14),
-                decoration: BoxDecoration(color: AppColors.card, borderRadius: BorderRadius.circular(12)),
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 18),
+                decoration: BoxDecoration(color: AppColors.card, borderRadius: BorderRadius.circular(18)),
                 onSubmitted: (_) => _check(),
               ),
               const Spacer(),

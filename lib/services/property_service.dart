@@ -31,6 +31,7 @@ class PropertyService {
       ...property.toMap(),
       'photos': urls,
       'updatedAt': FieldValue.serverTimestamp(),
+      'lastConfirmedAt': FieldValue.serverTimestamp(),
       if (isNew) 'createdAt': FieldValue.serverTimestamp(),
     }, SetOptions(merge: true));
   }

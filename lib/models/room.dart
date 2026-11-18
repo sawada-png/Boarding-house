@@ -17,6 +17,23 @@ enum RoomFloor {
   final String label;
 }
 
+/// Electricity: part of the rent, or the room has its own meter (landlord gives an estimate).
+enum ElectricityCost { included, ownMeter }
+
+/// Water: part of the rent, or paid separately.
+enum WaterCost { included, separate }
+
+/// Wi-Fi: part of the rent, a fixed monthly price, or no Wi-Fi.
+enum WifiCost { included, paid, none }
+
+/// Usual move-in terms a landlord can pick.
+const moveInOptions = [
+  '1 month deposit + 1 month advance',
+  '1 month advance only',
+  '2 months deposit + 1 month advance',
+  'No deposit',
+];
+
 /// Ready-made "what's included" items a landlord can tap. They can also type their own.
 const roomIncludedOptions = ['Bed', 'Mattress', 'Study table', 'Chair', 'Electric fan', 'Aircon', 'Cabinet', 'Window'];
 
@@ -37,6 +54,12 @@ class Room {
     this.floor = RoomFloor.ground,
     this.updatedAt,
     this.openedAt,
+    this.electricity = ElectricityCost.included,
+    this.electricityEstimate = 0,
+    this.water = WaterCost.included,
+    this.wifi = WifiCost.none,
+    this.wifiPrice = 0,
+    this.moveIn = '1 month deposit + 1 month advance',
   });
 
   /// Empty until it's saved the first time.
@@ -70,6 +93,26 @@ class Room {
   /// When the landlord last saved this room. Null until the server sets it.
   final DateTime? updatedAt;
 
+  // Bills. Rooms saved before these existed read as: electricity and water included, no Wi-Fi.
+  final ElectricityCost electricity;
+
+  /// Landlord's guess of the monthly electric bill when the room has its own meter.
+  final int electricityEstimate;
+  final WaterCost water;
+  final WifiCost wifi;
+
+  /// Monthly Wi-Fi price when [wifi] is paid.
+  final int wifiPrice;
+
+  /// "1 month deposit + 1 month advance"
+  final String moveIn;
+
+  /// Rent plus the bills we know: "About ₱4,050 /mo". Separate water has no amount, so it isn't added.
+  int get estimatedMonthly =>
+      monthlyPrice +
+      (electricity == ElectricityCost.ownMeter ? electricityEstimate : 0) +
+      (wifi == WifiCost.paid ? wifiPrice : 0);
+
   /// "Bedspace for 2" or "Solo room".
   String get typeLabel => type == RoomType.solo ? 'Solo room' : 'Bedspace for $capacity';
 
@@ -97,6 +140,12 @@ class Room {
       updatedAt: (d['updatedAt'] as Timestamp?)?.toDate(),
       openedAt: (d['openedAt'] as Timestamp?)?.toDate(),
       floor: RoomFloor.values.asNameMap()[d['floor']] ?? RoomFloor.ground,
+      electricity: ElectricityCost.values.asNameMap()[d['electricity']] ?? ElectricityCost.included,
+      electricityEstimate: (d['electricityEstimate'] as num?)?.toInt() ?? 0,
+      water: WaterCost.values.asNameMap()[d['water']] ?? WaterCost.included,
+      wifi: WifiCost.values.asNameMap()[d['wifi']] ?? WifiCost.none,
+      wifiPrice: (d['wifiPrice'] as num?)?.toInt() ?? 0,
+      moveIn: d['moveIn'] as String? ?? '1 month deposit + 1 month advance',
     );
   }
 
@@ -112,6 +161,12 @@ class Room {
     'included': included,
     'photos': photos,
     'floor': floor.name,
+    'electricity': electricity.name,
+    'electricityEstimate': electricity == ElectricityCost.ownMeter ? electricityEstimate : 0,
+    'water': water.name,
+    'wifi': wifi.name,
+    'wifiPrice': wifi == WifiCost.paid ? wifiPrice : 0,
+    'moveIn': moveIn,
   };
 }
 

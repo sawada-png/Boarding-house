@@ -5,6 +5,7 @@ import '../../models/property.dart' show formatPesos;
 import '../../models/school.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_text_styles.dart';
+import '../../widgets/wordmark.dart';
 import 'home_logic.dart';
 
 /// Pinned top of Home: logo + bell, the dark live board, and search.
@@ -92,20 +93,7 @@ class HomeHeader extends StatelessWidget {
         children: [
           Row(
             children: [
-              Expanded(
-                child: Text.rich(
-                  TextSpan(
-                    text: 'board',
-                    style: AppText.section.copyWith(fontSize: 22, letterSpacing: -0.5),
-                    children: const [
-                      TextSpan(
-                        text: 'mate',
-                        style: TextStyle(color: AppColors.lagoon),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+              const Expanded(child: Wordmark()),
               _CircleIcon(icon: CupertinoIcons.bell, label: 'Notifications', onTap: onBell),
             ],
           ),

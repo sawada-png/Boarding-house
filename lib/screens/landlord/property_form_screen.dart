@@ -7,7 +7,7 @@ import '../../services/property_service.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_text_styles.dart';
 import '../../widgets/chip_picker.dart';
-import '../../widgets/circle_back_button.dart';
+import '../../widgets/close_circle_button.dart';
 import '../../widgets/delete_text_button.dart';
 import '../../widgets/form_section_label.dart';
 import '../../widgets/labeled_field.dart';
@@ -119,15 +119,27 @@ class _PropertyFormScreenState extends State<PropertyFormScreen> {
     return CupertinoPageScaffold(
       child: SafeArea(
         child: ListView(
-          padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
+          padding: const EdgeInsets.fromLTRB(20, 4, 20, 32),
           children: [
-            const Align(alignment: Alignment.centerLeft, child: CircleBackButton()),
-            const SizedBox(height: 20),
+            Row(
+              children: [
+                CloseCircleButton(onTap: () => Navigator.maybePop(context)),
+                Expanded(
+                  child: Text(
+                    'Landlord mode',
+                    textAlign: TextAlign.center,
+                    style: AppText.label.copyWith(fontSize: 13, color: AppColors.textSecondary),
+                  ),
+                ),
+                const SizedBox(width: 44),
+              ],
+            ),
+            const SizedBox(height: 14),
             Text(
               _old == null ? 'Add your boarding house' : 'Edit boarding house',
-              style: AppText.largeTitle.copyWith(fontSize: 30),
+              style: AppText.largeTitle.copyWith(fontSize: 30, letterSpacing: -0.8),
             ),
-            const SizedBox(height: 28),
+            const SizedBox(height: 24),
 
             FormSectionLabel('Photos', hint: 'Outside, hallway, common areas. The first photo is the cover.'),
             PhotoPickerGrid(photos: _photos, onChanged: (p) => setState(() => _photos = p)),
@@ -241,7 +253,7 @@ class _LocationBox extends StatelessWidget {
       child: GestureDetector(
         onTap: onTap,
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(22),
           child: SizedBox(
             height: 160,
             child: pin == null
