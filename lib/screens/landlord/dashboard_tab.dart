@@ -176,7 +176,7 @@ class _Header extends StatelessWidget {
             fontSize: 13,
             fontWeight: FontWeight.w600,
             letterSpacing: 0.4,
-            color: AppColors.tealDark,
+            color: AppColors.lagoonDark,
           ),
         ),
         const SizedBox(height: 4),
@@ -202,7 +202,7 @@ class _StatTile extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('$number', style: GoogleFonts.inter(fontSize: 24, fontWeight: FontWeight.w800, color: AppColors.text)),
+            Text('$number', style: GoogleFonts.inter(fontSize: 24, fontWeight: FontWeight.w800, color: AppColors.ink)),
             const SizedBox(height: 2),
             Text(label, style: AppText.secondary.copyWith(fontSize: 13)),
           ],
@@ -226,8 +226,8 @@ class _EmptyState extends StatelessWidget {
           Container(
             width: 64,
             height: 64,
-            decoration: const BoxDecoration(color: AppColors.tealLight, shape: BoxShape.circle),
-            child: const Icon(CupertinoIcons.house, color: AppColors.teal, size: 30),
+            decoration: const BoxDecoration(color: AppColors.lagoonLight, shape: BoxShape.circle),
+            child: const Icon(CupertinoIcons.house, color: AppColors.lagoon, size: 30),
           ),
           const SizedBox(height: 16),
           Text('List your boarding house', style: AppText.cardTitle.copyWith(fontSize: 19)),

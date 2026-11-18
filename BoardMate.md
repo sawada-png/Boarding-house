@@ -183,6 +183,7 @@ Code: https://github.com/sawada-png/Boarding-house
 - [ ] Facebook login (needs a Meta developer app)
 - [ ] Real SMS codes (needs Blaze plan; test number works now: +63 912 345 6789, code 123456)
 - [ ] Deleting a photo doesn't remove it from Cloudinary yet
+- [ ] Switch map tiles from free OpenStreetMap to MapTiler / Mapbox / Stadia (OSM rules: not for big apps)
 
 **Week 2: next**
 - [ ] Home list with real boarding houses, sorted by distance to your school
@@ -190,10 +191,11 @@ Code: https://github.com/sawada-png/Boarding-house
 - [ ] Listing page with photo gallery, map and room tabs
 - [ ] Search + filters (price, girls/boys only, Wi-Fi, no curfew, has rooms available)
 - [ ] Map tab with pins
+- [ ] Saved: tap a heart to save a place, see them in the Saved tab
 
 **How to run the app**
 1. Open the `Boarding-house` folder in Cursor, open a terminal
-2. Type `flutter run -d web-server --web-port 8080`
+2. Type `flutter run --release -d web-server --web-port 8080`
 3. Open http://localhost:8080 in Chrome
 
 ## Why I'm building this

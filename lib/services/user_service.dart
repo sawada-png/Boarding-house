@@ -28,6 +28,10 @@ class UserService {
     });
   }
 
+  /// Saves the student's school (a School id like 'psu'), or clears it with null.
+  Future<void> setSchool(String uid, String? schoolId) =>
+      _users.doc(uid).update({'school': schoolId});
+
   /// Switch between student mode and landlord mode.
   Future<void> setRole(String uid, UserRole role) =>
       _users.doc(uid).update({'role': role.name});

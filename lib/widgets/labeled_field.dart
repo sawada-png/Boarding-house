@@ -41,7 +41,7 @@ class LabeledField extends StatelessWidget {
           minLines: maxLines > 1 ? 3 : 1,
           textCapitalization: textCapitalization,
           style: AppText.body,
-          padding: const EdgeInsets.all(14),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           prefix: prefixText == null
               ? null
               : Padding(
@@ -50,7 +50,7 @@ class LabeledField extends StatelessWidget {
                 ),
           decoration: BoxDecoration(
             color: AppColors.card,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(16),
           ),
         ),
       ],

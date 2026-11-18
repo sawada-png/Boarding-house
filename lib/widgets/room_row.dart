@@ -43,7 +43,7 @@ class RoomRow extends StatelessWidget {
                 ],
               ),
             ),
-            StatusBadge.room(available: room.available),
+            StatusBadge.room(open: room.available),
           ],
         ),
       ),

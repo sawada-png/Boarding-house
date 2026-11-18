@@ -107,9 +107,9 @@ class PhotoPickerGrid extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(CupertinoIcons.camera, color: AppColors.teal),
+              const Icon(CupertinoIcons.camera, color: AppColors.lagoon),
               const SizedBox(height: 4),
-              Text('Add photos', style: AppText.small.copyWith(color: AppColors.teal)),
+              Text('Add photos', style: AppText.small.copyWith(color: AppColors.lagoon)),
             ],
           ),
         ),

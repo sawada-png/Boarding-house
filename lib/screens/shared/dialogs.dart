@@ -45,6 +45,8 @@ Future<bool> showConfirmDelete(
 Future<T?> _showCard<T>(
   BuildContext context, {
   required IconData icon,
+  Color iconColor = AppColors.error,
+  Color iconFill = AppColors.errorLight,
   required String title,
   required String message,
   required List<Widget> Function(void Function(T?) close) buttons,
@@ -53,7 +55,7 @@ Future<T?> _showCard<T>(
     context: context,
     barrierDismissible: true,
     barrierLabel: 'Close',
-    barrierColor: const Color(0x661C1C1E),
+    barrierColor: const Color(0x730F1D20),
     transitionDuration: const Duration(milliseconds: 200),
     transitionBuilder: (context, animation, _, child) {
       final curved = CurvedAnimation(parent: animation, curve: Curves.easeOutBack);
@@ -70,9 +72,9 @@ Future<T?> _showCard<T>(
           padding: const EdgeInsets.fromLTRB(24, 28, 24, 20),
           decoration: BoxDecoration(
             color: AppColors.card,
-            borderRadius: BorderRadius.circular(24),
+            borderRadius: BorderRadius.circular(28),
             boxShadow: const [
-              BoxShadow(color: Color(0x26000000), blurRadius: 40, offset: Offset(0, 16)),
+              BoxShadow(color: Color(0x290F1D20), blurRadius: 40, offset: Offset(0, 16)),
             ],
           ),
           child: Column(
@@ -81,11 +83,11 @@ Future<T?> _showCard<T>(
               Container(
                 width: 56,
                 height: 56,
-                decoration: const BoxDecoration(color: AppColors.errorLight, shape: BoxShape.circle),
-                child: Icon(icon, color: AppColors.error, size: 28),
+                decoration: BoxDecoration(color: iconFill, shape: BoxShape.circle),
+                child: Icon(icon, color: iconColor, size: 28),
               ),
               const SizedBox(height: 16),
-              Text(title, textAlign: TextAlign.center, style: AppText.cardTitle.copyWith(fontSize: 19)),
+              Text(title, textAlign: TextAlign.center, style: AppText.cardTitle.copyWith(fontSize: 22)),
               const SizedBox(height: 8),
               Text(
                 message,
@@ -99,5 +101,18 @@ Future<T?> _showCard<T>(
         ),
       ),
     ),
+  );
+}
+
+/// A calm popup for news like "Coming soon". Lagoon icon instead of red.
+Future<void> showInfo(BuildContext context, {required String title, required String message}) {
+  return _showCard<void>(
+    context,
+    icon: CupertinoIcons.sparkles,
+    iconColor: AppColors.lagoon,
+    iconFill: AppColors.lagoonLight,
+    title: title,
+    message: message,
+    buttons: (close) => [PrimaryButton(label: 'Got it', onPressed: () => close(null))],
   );
 }

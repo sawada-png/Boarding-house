@@ -1,132 +1,184 @@
 import 'package:cupertino_ui/cupertino_ui.dart';
-import 'package:google_fonts/google_fonts.dart';
 
+import '../../models/app_user.dart';
+import '../../models/property.dart';
+import '../../models/room.dart';
+import '../../models/school.dart';
+import '../../services/property_service.dart';
+import '../../services/room_service.dart';
+import '../../services/user_service.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_text_styles.dart';
+import '../../widgets/bm_tab_scaffold.dart';
 import '../../widgets/listing_card.dart';
-import '../../widgets/room_tabs.dart';
-import '../../widgets/section_header.dart';
-import '../../widgets/status_badge.dart';
-import '../../widgets/tag_chip.dart';
+import '../shared/dialogs.dart';
+import 'home_header.dart';
+import 'home_logic.dart';
+import 'listing_screen.dart';
 
-/// Student home tab.
-// shortcut: shows sample data to preview the design; Week 2 loads real listings from Firestore.
+/// Student home tab: live header pinned on top, boarding houses closest to the school below.
 class HomeTab extends StatefulWidget {
-  const HomeTab({super.key});
+  const HomeTab({super.key, required this.profile, this.properties, this.rooms});
+
+  final AppUser profile;
+
+  /// Only set in tests. Normally loaded from Firestore.
+  final Stream<List<Property>>? properties;
+  final Stream<List<Room>>? rooms;
 
   @override
   State<HomeTab> createState() => _HomeTabState();
 }
 
 class _HomeTabState extends State<HomeTab> {
-  final _filters = ['Under ₱4k', 'Girls only', 'Wi-Fi', 'No curfew'];
-  final _selectedFilters = <String>{'Under ₱4k'};
-  int _room = 0;
+  late final _properties = widget.properties ?? PropertyService().watchAll();
+  late final _rooms = widget.rooms ?? RoomService().watchAll();
+  late School? _school = schoolById(widget.profile.school);
+  final _search = TextEditingController();
+  final _scroll = ScrollController();
+  bool _collapsed = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _scroll.addListener(_onScroll);
+    _search.addListener(() => setState(() {}));
+  }
+
+  @override
+  void dispose() {
+    _scroll.dispose();
+    _search.dispose();
+    super.dispose();
+  }
+
+  // Two different limits so the header doesn't flicker at the edge.
+  void _onScroll() {
+    final offset = _scroll.offset;
+    if (!_collapsed && offset > 60) setState(() => _collapsed = true);
+    if (_collapsed && offset < 8) setState(() => _collapsed = false);
+  }
+
+  void _expand() {
+    _scroll.animateTo(0, duration: const Duration(milliseconds: 300), curve: Curves.easeOut);
+  }
+
+  /// Saves the school, or clears it when [picked] is null.
+  Future<void> _setSchool(School? picked) async {
+    final before = _school;
+    setState(() => _school = picked);
+    try {
+      await UserService().setSchool(widget.profile.uid, picked?.id);
+    } catch (_) {
+      if (!mounted) return;
+      setState(() => _school = before);
+      await showError(context, "Couldn't save your school. Check your internet and try again.");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      child: SafeArea(
-        bottom: false,
-        child: ListView(
-          padding: const EdgeInsets.fromLTRB(20, 16, 20, 120),
-          children: [
-            _header(),
-            const SizedBox(height: 16),
-            CupertinoSearchTextField(
-              placeholder: 'Search boarding houses, areas',
-              backgroundColor: AppColors.searchFill,
-              borderRadius: BorderRadius.circular(12),
-              style: AppText.body,
-              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-            ),
-            const SizedBox(height: 16),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: [
-                  for (final f in _filters)
-                    Padding(
-                      padding: const EdgeInsets.only(right: 8),
-                      child: TagChip(
-                        label: f,
-                        selected: _selectedFilters.contains(f),
-                        onTap: () => setState(() {
-                          _selectedFilters.contains(f)
-                              ? _selectedFilters.remove(f)
-                              : _selectedFilters.add(f);
-                        }),
-                      ),
-                    ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 12),
-            const SectionHeader(title: 'Closest to campus', actionLabel: 'See all'),
-            const SizedBox(height: 4),
-            const ListingCard(
-              name: "Nathan's Boarding House",
-              subtitle: '450 m from PSU · Tiniguiban',
-              priceText: '₱3,000–4,500',
-              roomsAvailable: 3,
-              rating: 4.8,
-              reviewCount: 32,
-            ),
-            const SizedBox(height: 28),
-            Text('Room tabs (preview)', style: AppText.section),
-            const SizedBox(height: 12),
-            RoomTabs(
-              labels: const ['Room 1', 'Room 2', 'Room 3', 'Room 4'],
-              selectedIndex: _room,
-              taken: const {2},
-              onChanged: (i) => setState(() => _room = i),
-            ),
-            const SizedBox(height: 12),
-            Row(
+      child: StreamBuilder<List<Property>>(
+        stream: _properties,
+        builder: (context, places) => StreamBuilder<List<Room>>(
+          stream: _rooms,
+          builder: (context, rooms) {
+            final ready = places.hasData && rooms.hasData;
+            return Column(
               children: [
-                Text('Room ${_room + 1}', style: AppText.cardTitle),
-                const SizedBox(width: 8),
-                StatusBadge.room(available: _room != 2),
+                HomeHeader(
+                  school: _school,
+                  stats: ready ? LiveStats.from(places.data!, rooms.data!, _school) : null,
+                  collapsed: _collapsed,
+                  search: _search,
+                  onSchool: _setSchool,
+                  onExpand: _expand,
+                  onBell: () => showInfo(context, title: 'No notifications yet', message: "We'll let you know here when a landlord replies or a room opens up."),
+                  onFilters: () => showInfo(context, title: 'Coming soon', message: 'Filters for price, girls/boys only, Wi-Fi and curfew are coming next.'),
+                ),
+                Expanded(
+                  child: ListView(
+                    controller: _scroll,
+                    padding: const EdgeInsets.fromLTRB(20, 16, 20, BmTabScaffold.bottomSpace),
+                    children: _listings(places, rooms),
+                  ),
+                ),
               ],
-            ),
-          ],
+            );
+          },
         ),
       ),
     );
   }
 
-  Widget _header() {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  const Icon(CupertinoIcons.location, size: 16, color: AppColors.teal),
-                  const SizedBox(width: 4),
-                  Text('Near PSU Tiniguiban',
-                      style: GoogleFonts.inter(
-                          fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.teal)),
-                ],
-              ),
-              const SizedBox(height: 4),
-              Text('Find your room', style: AppText.largeTitle),
-            ],
+  List<Widget> _listings(AsyncSnapshot<List<Property>> places, AsyncSnapshot<List<Room>> rooms) {
+    if (places.hasError) {
+      return [const _Message(icon: CupertinoIcons.wifi_slash, text: "Couldn't load boarding houses.\nCheck your internet.")];
+    }
+    if (!places.hasData) {
+      return [const Padding(padding: EdgeInsets.only(top: 40), child: CupertinoActivityIndicator())];
+    }
+    final list = searchListings(sortByDistance(places.data!, _school), _search.text);
+    if (list.isEmpty) {
+      return [
+        _Message(
+          icon: CupertinoIcons.house,
+          text: _search.text.trim().isEmpty
+              ? 'No boarding houses yet.\nCheck again soon!'
+              : 'Nothing matches "${_search.text.trim()}".',
+        ),
+      ];
+    }
+    final available = countAvailableRooms(rooms.data ?? const []);
+    final count = '${list.length} ${list.length == 1 ? 'house' : 'houses'}';
+    return [
+      Text(
+        _school == null ? '$count · A to Z' : '$count · closest first',
+        style: AppText.label.copyWith(fontSize: 15, color: AppColors.textSecondary),
+      ),
+      const SizedBox(height: 16),
+      for (final p in list)
+        Padding(
+          padding: const EdgeInsets.only(bottom: 16),
+          child: ListingCard(
+            name: p.name,
+            subtitle: _subtitle(p),
+            priceText: formatPriceRange(p.priceMin, p.priceMax),
+            photoUrl: p.photos.isEmpty ? null : p.photos.first,
+            roomsAvailable: available[p.id],
+            onTap: () => Navigator.of(context, rootNavigator: true).push(
+              CupertinoPageRoute(builder: (_) => ListingScreen(property: p, school: _school)),
+            ),
           ),
         ),
-        Container(
-          width: 44,
-          height: 44,
-          alignment: Alignment.center,
-          decoration: const BoxDecoration(color: AppColors.tealLight, shape: BoxShape.circle),
-          child: Text('B',
-              style: GoogleFonts.inter(
-                  fontSize: 16, fontWeight: FontWeight.w700, color: AppColors.teal)),
-        ),
-      ],
+    ];
+  }
+
+  String _subtitle(Property p) {
+    final school = _school;
+    if (school == null) return p.tags.isEmpty ? 'Puerto Princesa' : p.tags.take(3).join(' · ');
+    return '${formatDistance(distanceTo(school, p))} from ${school.shortName}';
+  }
+}
+
+class _Message extends StatelessWidget {
+  const _Message({required this.icon, required this.text});
+
+  final IconData icon;
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 48),
+      child: Column(
+        children: [
+          Icon(icon, size: 40, color: AppColors.textSecondary),
+          const SizedBox(height: 10),
+          Text(text, style: AppText.secondary, textAlign: TextAlign.center),
+        ],
+      ),
     );
   }
 }

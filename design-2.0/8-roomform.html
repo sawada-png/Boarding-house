@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Landlord adds a room</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Inter:wght@400;500;600;700&display=swap">
+<style>
+body{margin:0}
+a{color:#0B6E5F}a:hover{color:#08564A}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; position: relative; overflow: hidden; background: #F3F5F4; font-family: Inter, system-ui, sans-serif; color: #0F1D20">
+<div style="padding: 54px 20px 0; display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; align-items: center; justify-content: space-between">
+<a href="Landlord2.dc.html" aria-label="Close" style="width: 44px; height: 44px; border-radius: 22px; background: #FFFFFF; display: flex; align-items: center; justify-content: center; color: #0F1D20">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></a>
+<span style="font-size: 13px; font-weight: 600; color: #5B6664">Nathan's House</span>
+<span style="width: 44px"></span>
+</div>
+<h1 style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-size: 30px; font-weight: 800; letter-spacing: -0.8px">Add Room 6</h1>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-size: 13px; font-weight: 600; color: #5B6664">Which floor? (puts it on your Room Map)</span>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; padding: 4px; background: #E3E8E6; border-radius: 14px">
+<button style="height: 38px; border: 0; border-radius: 10px; background: none; font: 500 14px Inter, sans-serif; color: #0F1D20">Ground</button>
+<button aria-pressed="true" style="height: 38px; border: 0; border-radius: 10px; background: #0F1D20; color: #FFFFFF; font: 600 14px Inter, sans-serif">2nd floor</button>
+<button style="height: 38px; border: 0; border-radius: 10px; background: none; font: 500 14px Inter, sans-serif; color: #0F1D20">3rd floor</button>
+</div>
+</div>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
+<button aria-pressed="true" style="height: 64px; border: 2px solid #0B6E5F; border-radius: 16px; background: #FFFFFF; text-align: left; padding: 0 14px; font: 600 15px Inter, sans-serif; color: #0F1D20">Bedspace<span style="display: block; font-size: 12px; font-weight: 400; color: #5B6664">2–6 people</span></button>
+<button style="height: 64px; border: 2px solid #FFFFFF; border-radius: 16px; background: #FFFFFF; text-align: left; padding: 0 14px; font: 600 15px Inter, sans-serif; color: #0F1D20">Solo room<span style="display: block; font-size: 12px; font-weight: 400; color: #5B6664">1 person</span></button>
+</div>
+<div style="background: #FFFFFF; border-radius: 22px; padding: 6px 16px">
+<label style="display: flex; align-items: center; justify-content: space-between; height: 50px; border-bottom: 1px solid #EDF0EF; font-size: 15px; font-weight: 500">Rent per person<input value="₱3,500" style="width: 110px; text-align: right; border: 0; outline: none; font: 700 16px Inter, sans-serif; color: #0F1D20; background: none"></label>
+<div style="display: flex; align-items: center; justify-content: space-between; height: 54px; border-bottom: 1px solid #EDF0EF">
+<span style="font-size: 15px; font-weight: 500">Electricity</span>
+<div style="display: flex; gap: 4px">
+<button style="height: 32px; padding: 0 10px; border: 0; border-radius: 10px; background: #F3F5F4; font: 500 13px Inter, sans-serif; color: #0F1D20">Included</button>
+<button aria-pressed="true" style="height: 32px; padding: 0 10px; border: 0; border-radius: 10px; background: #0F1D20; color: #FFFFFF; font: 600 13px Inter, sans-serif">Own meter ~₱400</button>
+</div>
+</div>
+<div style="display: flex; align-items: center; justify-content: space-between; height: 54px; border-bottom: 1px solid #EDF0EF">
+<span style="font-size: 15px; font-weight: 500">Water</span>
+<div style="display: flex; gap: 4px">
+<button aria-pressed="true" style="height: 32px; padding: 0 10px; border: 0; border-radius: 10px; background: #0F1D20; color: #FFFFFF; font: 600 13px Inter, sans-serif">Included</button>
+<button style="height: 32px; padding: 0 10px; border: 0; border-radius: 10px; background: #F3F5F4; font: 500 13px Inter, sans-serif; color: #0F1D20">Separate</button>
+</div>
+</div>
+<div style="display: flex; align-items: center; justify-content: space-between; height: 54px; border-bottom: 1px solid #EDF0EF">
+<span style="font-size: 15px; font-weight: 500">Wi-Fi</span>
+<div style="display: flex; gap: 4px">
+<button style="height: 32px; padding: 0 10px; border: 0; border-radius: 10px; background: #F3F5F4; font: 500 13px Inter, sans-serif; color: #0F1D20">Included</button>
+<button aria-pressed="true" style="height: 32px; padding: 0 10px; border: 0; border-radius: 10px; background: #0F1D20; color: #FFFFFF; font: 600 13px Inter, sans-serif">₱150</button>
+<button style="height: 32px; padding: 0 10px; border: 0; border-radius: 10px; background: #F3F5F4; font: 500 13px Inter, sans-serif; color: #0F1D20">None</button>
+</div>
+</div>
+<div style="display: flex; align-items: center; justify-content: space-between; height: 50px">
+<span style="font-size: 15px; font-weight: 500">Move-in</span>
+<button style="height: 32px; padding: 0 12px; border: 0; border-radius: 10px; background: #F3F5F4; font: 600 13px Inter, sans-serif; color: #0F1D20">1 deposit + 1 advance ▾</button>
+</div>
+</div>
+<div style="display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; border-radius: 18px; background: #DDEFEA">
+<span style="font-size: 13px; font-weight: 600; color: #08564A">Students will see</span>
+<span style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 20px; font-weight: 800; color: #08564A">About ₱4,050 /mo</span>
+</div>
+</div>
+<div style="position: absolute; left: 20px; right: 20px; bottom: 34px; display: flex; flex-direction: column; gap: 6px">
+<button style="height: 56px; border: 0; border-radius: 28px; background: #0F1D20; color: #FFFFFF; font: 600 16px Inter, sans-serif">Next: add photos</button>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

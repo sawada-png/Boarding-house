@@ -48,7 +48,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 width: 64,
                 height: 64,
                 decoration: BoxDecoration(
-                  color: AppColors.teal,
+                  color: AppColors.lagoon,
                   borderRadius: BorderRadius.circular(18),
                 ),
                 child: const Icon(CupertinoIcons.house_fill, color: AppColors.card, size: 32),

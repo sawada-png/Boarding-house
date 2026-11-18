@@ -40,7 +40,7 @@ class _ProfileTabState extends State<ProfileTab> {
     return CupertinoPageScaffold(
       child: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 24, 20, 24),
+          padding: const EdgeInsets.fromLTRB(20, 24, 20, 120),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

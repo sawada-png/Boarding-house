@@ -3,27 +3,30 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'app_colors.dart';
 
-/// Text sizes from the design/ mockups. All use the Inter font.
+/// Text styles from DESIGN.md: Bricolage Grotesque for headings, Inter for everything else.
 abstract final class AppText {
-  static TextStyle get largeTitle => GoogleFonts.inter(
-      fontSize: 34, fontWeight: FontWeight.w800, letterSpacing: -0.8, color: AppColors.text);
+  static TextStyle _heading(double size, double spacing) => GoogleFonts.bricolageGrotesque(
+      fontSize: size, fontWeight: FontWeight.w800, letterSpacing: spacing, height: 1.05, color: AppColors.ink);
 
-  static TextStyle get title => GoogleFonts.inter(
-      fontSize: 22, fontWeight: FontWeight.w700, letterSpacing: -0.4, color: AppColors.text);
+  /// "Rooms near your campus." (38) and page titles.
+  static TextStyle get largeTitle => _heading(34, -1);
 
-  static TextStyle get section => GoogleFonts.inter(
-      fontSize: 20, fontWeight: FontWeight.w700, color: AppColors.text);
+  static TextStyle get title => _heading(26, -0.6);
 
-  static TextStyle get cardTitle => GoogleFonts.inter(
-      fontSize: 17, fontWeight: FontWeight.w700, color: AppColors.text);
+  /// "Room Map", "Real monthly cost".
+  static TextStyle get section => _heading(18, -0.2);
 
-  static TextStyle get body => GoogleFonts.inter(fontSize: 16, color: AppColors.text);
+  /// House name on a card.
+  static TextStyle get cardTitle => _heading(20, -0.3);
+
+  static TextStyle get body => GoogleFonts.inter(fontSize: 16, color: AppColors.ink);
 
   static TextStyle get secondary => GoogleFonts.inter(fontSize: 14, color: AppColors.textSecondary);
 
-  static TextStyle get label => GoogleFonts.inter(
-      fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.text);
+  static TextStyle get label => GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.ink);
 
-  static TextStyle get small => GoogleFonts.inter(
-      fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.text);
+  static TextStyle get small => GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.ink);
+
+  /// Prices like "₱3,500".
+  static TextStyle get price => GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.w700, color: AppColors.ink);
 }

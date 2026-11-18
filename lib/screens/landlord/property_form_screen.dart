@@ -242,9 +242,9 @@ class _LocationBox extends StatelessWidget {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(CupertinoIcons.map_pin_ellipse, color: AppColors.teal, size: 32),
+                        const Icon(CupertinoIcons.map_pin_ellipse, color: AppColors.lagoon, size: 32),
                         const SizedBox(height: 6),
-                        Text('Set location on map', style: AppText.label.copyWith(color: AppColors.teal)),
+                        Text('Set location on map', style: AppText.label.copyWith(color: AppColors.lagoon)),
                       ],
                     ),
                   )
@@ -261,7 +261,7 @@ class _LocationBox extends StatelessWidget {
                             color: AppColors.card,
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          child: Text('Change', style: AppText.small.copyWith(color: AppColors.teal)),
+                          child: Text('Change', style: AppText.small.copyWith(color: AppColors.lagoon)),
                         ),
                       ),
                     ],

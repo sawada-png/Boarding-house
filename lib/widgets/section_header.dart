@@ -26,7 +26,7 @@ class SectionHeader extends StatelessWidget {
             child: Text(
               actionLabel!,
               style: GoogleFonts.inter(
-                  fontSize: 15, fontWeight: FontWeight.w600, color: AppColors.teal),
+                  fontSize: 15, fontWeight: FontWeight.w600, color: AppColors.lagoon),
             ),
           ),
       ],

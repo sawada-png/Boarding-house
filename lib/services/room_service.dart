@@ -16,6 +16,10 @@ class RoomService {
       .map((snap) => snap.docs.map(Room.fromDoc).toList()
         ..sort((a, b) => compareRoomNames(a.name, b.name)));
 
+  /// Every room, used to count available rooms on the student home list.
+  Stream<List<Room>> watchAll() =>
+      _rooms.snapshots().map((snap) => snap.docs.map(Room.fromDoc).toList());
+
   /// Adds a new room (when [room].id is empty) or updates an existing one. Uploads new photos first.
   Future<void> save(Room room, List<PickedPhoto> photos) async {
     final isNew = room.id.isEmpty;

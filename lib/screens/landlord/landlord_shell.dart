@@ -17,8 +17,8 @@ class LandlordShell extends StatelessWidget {
     return BmTabScaffold(
       tabs: [
         BmTab(
-          icon: CupertinoIcons.square_grid_2x2,
-          label: 'Dashboard',
+          icon: CupertinoIcons.house,
+          label: 'House',
           builder: (_) => DashboardTab(profile: profile),
         ),
         BmTab(

@@ -28,6 +28,7 @@ class Room {
     this.available = true,
     this.included = const [],
     this.photos = const [],
+    this.updatedAt,
   });
 
   /// Empty until it's saved the first time.
@@ -53,6 +54,9 @@ class Room {
   final List<String> included;
   final List<String> photos;
 
+  /// When the landlord last saved this room. Null until the server sets it.
+  final DateTime? updatedAt;
+
   /// "Bedspace for 2" or "Solo room".
   String get typeLabel => type == RoomType.solo ? 'Solo room' : 'Bedspace for $capacity';
 
@@ -77,6 +81,7 @@ class Room {
       available: d['available'] as bool? ?? true,
       included: List<String>.from(d['included'] as List? ?? const []),
       photos: List<String>.from(d['photos'] as List? ?? const []),
+      updatedAt: (d['updatedAt'] as Timestamp?)?.toDate(),
     );
   }
 
@@ -100,4 +105,14 @@ int compareRoomNames(String a, String b) {
   final numberB = int.tryParse(RegExp(r'\d+').firstMatch(b)?.group(0) ?? '');
   if (numberA != null && numberB != null && numberA != numberB) return numberA.compareTo(numberB);
   return a.compareTo(b);
+}
+
+/// propertyId → how many of its rooms are available.
+/// Boarding houses with no rooms yet are left out.
+Map<String, int> countAvailableRooms(Iterable<Room> rooms) {
+  final counts = <String, int>{};
+  for (final room in rooms) {
+    counts[room.propertyId] = (counts[room.propertyId] ?? 0) + (room.available ? 1 : 0);
+  }
+  return counts;
 }

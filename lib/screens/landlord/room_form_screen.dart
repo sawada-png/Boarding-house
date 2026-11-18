@@ -186,7 +186,7 @@ class _RoomFormScreenState extends State<RoomFormScreen> {
                   ),
                   CupertinoSwitch(
                     value: _available,
-                    activeTrackColor: AppColors.teal,
+                    activeTrackColor: AppColors.lagoon,
                     onChanged: (v) => setState(() => _available = v),
                   ),
                 ],

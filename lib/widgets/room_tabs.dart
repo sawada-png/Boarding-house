@@ -65,7 +65,7 @@ class RoomTabs extends StatelessWidget {
             style: GoogleFonts.inter(
               fontSize: 13,
               fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
-              color: taken.contains(i) ? AppColors.textSecondary : AppColors.text,
+              color: taken.contains(i) ? AppColors.textSecondary : AppColors.ink,
             ),
           ),
         ),

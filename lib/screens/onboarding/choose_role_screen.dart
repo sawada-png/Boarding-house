@@ -133,7 +133,7 @@ class _RoleCard extends StatelessWidget {
             color: AppColors.card,
             borderRadius: BorderRadius.circular(18),
             border: Border.all(
-              color: selected ? AppColors.teal : AppColors.card,
+              color: selected ? AppColors.lagoon : AppColors.card,
               width: 2,
             ),
           ),
@@ -143,10 +143,10 @@ class _RoleCard extends StatelessWidget {
                 width: 48,
                 height: 48,
                 decoration: BoxDecoration(
-                  color: selected ? AppColors.teal : AppColors.tealLight,
+                  color: selected ? AppColors.lagoon : AppColors.lagoonLight,
                   borderRadius: BorderRadius.circular(14),
                 ),
-                child: Icon(icon, color: selected ? AppColors.card : AppColors.teal),
+                child: Icon(icon, color: selected ? AppColors.card : AppColors.lagoon),
               ),
               const SizedBox(width: 14),
               Expanded(
@@ -161,7 +161,7 @@ class _RoleCard extends StatelessWidget {
               ),
               Icon(
                 selected ? CupertinoIcons.check_mark_circled_solid : CupertinoIcons.circle,
-                color: selected ? AppColors.teal : AppColors.border,
+                color: selected ? AppColors.lagoon : AppColors.border,
               ),
             ],
           ),

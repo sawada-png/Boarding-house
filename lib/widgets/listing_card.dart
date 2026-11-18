@@ -69,7 +69,7 @@ class ListingCard extends StatelessWidget {
                           TextSpan(
                             text: priceText,
                             style: GoogleFonts.inter(
-                                fontSize: 16, fontWeight: FontWeight.w700, color: AppColors.text),
+                                fontSize: 16, fontWeight: FontWeight.w700, color: AppColors.ink),
                             children: [TextSpan(text: ' / month', style: AppText.secondary)],
                           ),
                         ),

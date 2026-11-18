@@ -1,29 +1,50 @@
 import 'package:cupertino_ui/cupertino_ui.dart';
 
-/// All colors used in the app, taken from the design/ mockups.
+/// All colors used in the app, from DESIGN.md (BoardMate 2.0).
 abstract final class AppColors {
-  static const teal = Color(0xFF0B7285);
-  static const tealDark = Color(0xFF0B5F6E);
-  static const tealLight = Color(0xFFDCEFF2);
+  /// Main text, main buttons and the tab bar.
+  static const ink = Color(0xFF0F1D20);
 
-  static const background = Color(0xFFF2F2F7);
+  /// Open rooms, links, success.
+  static const lagoon = Color(0xFF0B6E5F);
+  static const lagoonDark = Color(0xFF08564A);
+  static const lagoonLight = Color(0xFFDDEFEA);
+
+  /// Tiny highlights only (selected room ring, dots). Never text on white.
+  static const orange = Color(0xFFE8692E);
+  static const warning = Color(0xFFB4501E);
+
+  static const background = Color(0xFFF3F5F4);
   static const card = Color(0xFFFFFFFF);
-  static const text = Color(0xFF1C1C1E);
-  static const textSecondary = Color(0xFF6B6B70);
-  static const border = Color(0xFFD1D1D6);
-  static const divider = Color(0xFFE3E3E8);
-  static const searchFill = Color(0xFFE3E3E8);
-  static const segmentFill = Color(0xFFEEEEF0);
+  static const textSecondary = Color(0xFF5B6664);
+  static const border = Color(0xFFDCE2E0);
+  static const divider = Color(0xFFDCE2E0);
+  static const segmentFill = Color(0xFFE3E8E6);
 
-  static const takenFill = Color(0xFFE9E9EB);
-  static const takenText = Color(0xFF48484A);
+  /// Taken rooms: diagonal stripes of these two grays.
+  static const stripeDark = Color(0xFFD5DCD9);
+  static const stripeLight = Color(0xFFEEF1F0);
+  static const takenFill = Color(0xFFE3E8E6);
+  static const takenText = Color(0xFF4A5553);
+
   static const star = Color(0xFFF5A524);
-  static const error = Color(0xFFD64545);
-  static const errorLight = Color(0xFFFDECEC);
+  static const error = Color(0xFFC23B32);
+  static const errorLight = Color(0xFFFBEAE8);
+
+  /// Text on the dark ink cards.
+  static const onInk = Color(0xFFDCE4E2);
+  static const onInkMuted = Color(0xFFA9B8B4);
+  static const onInkGood = Color(0xFF7FD3C2);
+
+  /// Live board (dark header card on Home).
+  static const liveGreen = Color(0xFF2BA58F);
+  static const inkRaised = Color(0xFF1F2E31);
+  static const inkLine = Color(0xFF2C3A3D);
+  static const onInkSoft = Color(0xFFC9D3D0);
 
   // Placeholder colors shown before a photo is uploaded.
-  static const photoTeal = Color(0xFFCFE3E7);
-  static const photoTealText = Color(0xFF3E6B73);
-  static const photoSand = Color(0xFFE4DCCF);
+  static const photoTeal = Color(0xFFCFE0DA);
+  static const photoTealText = Color(0xFF3F5E56);
+  static const photoSand = Color(0xFFE2DED3);
   static const photoSandText = Color(0xFF6E5E45);
 }

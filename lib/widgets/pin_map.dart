@@ -43,7 +43,7 @@ class PinMap extends StatelessWidget {
                 width: 44,
                 height: 44,
                 alignment: Alignment.topCenter,
-                child: const Icon(CupertinoIcons.location_solid, size: 44, color: AppColors.teal),
+                child: const Icon(CupertinoIcons.location_solid, size: 44, color: AppColors.lagoon),
               ),
             ],
           ),

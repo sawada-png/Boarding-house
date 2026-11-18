@@ -88,7 +88,7 @@ class _ChipPickerState extends State<ChipPicker> {
               onPressed: _addCustom,
               child: Semantics(
                 label: 'Add',
-                child: const Icon(CupertinoIcons.add_circled_solid, size: 32, color: AppColors.teal),
+                child: const Icon(CupertinoIcons.add_circled_solid, size: 32, color: AppColors.lagoon),
               ),
             ),
           ],

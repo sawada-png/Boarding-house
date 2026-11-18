@@ -1,4 +1,4 @@
-﻿import 'package:cupertino_ui/cupertino_ui.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 
 import '../../models/app_user.dart';
 import '../../widgets/bm_tab_scaffold.dart';
@@ -6,7 +6,7 @@ import '../shared/placeholder_tab.dart';
 import '../shared/profile_tab.dart';
 import 'home_tab.dart';
 
-/// Student mode: the five bottom tabs.
+/// Student mode: the four tabs of the floating tab bar.
 class TenantShell extends StatelessWidget {
   const TenantShell({super.key, required this.profile});
 
@@ -16,12 +16,7 @@ class TenantShell extends StatelessWidget {
   Widget build(BuildContext context) {
     return BmTabScaffold(
       tabs: [
-        BmTab(icon: CupertinoIcons.house, label: 'Home', builder: (_) => const HomeTab()),
-        BmTab(
-          icon: CupertinoIcons.map,
-          label: 'Map',
-          builder: (_) => const PlaceholderTab(title: 'Map', comingIn: 'Week 2'),
-        ),
+        BmTab(icon: CupertinoIcons.compass, label: 'Explore', builder: (_) => HomeTab(profile: profile)),
         BmTab(
           icon: CupertinoIcons.heart,
           label: 'Saved',
@@ -32,11 +27,7 @@ class TenantShell extends StatelessWidget {
           label: 'Messages',
           builder: (_) => const PlaceholderTab(title: 'Messages', comingIn: 'Week 3'),
         ),
-        BmTab(
-          icon: CupertinoIcons.person,
-          label: 'Profile',
-          builder: (_) => ProfileTab(profile: profile),
-        ),
+        BmTab(icon: CupertinoIcons.person, label: 'Profile', builder: (_) => ProfileTab(profile: profile)),
       ],
     );
   }
