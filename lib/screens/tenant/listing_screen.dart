@@ -4,6 +4,7 @@ import 'package:latlong2/latlong.dart';
 import '../../models/property.dart';
 import '../../models/room.dart';
 import '../../models/school.dart';
+import '../../services/landlord_service.dart';
 import '../../services/room_service.dart';
 import '../../services/saved_service.dart';
 import '../../theme/app_colors.dart';
@@ -23,7 +24,15 @@ import 'share_house.dart';
 
 /// The boarding house page (design-2.0/4-house and 4b-house-no-rooms).
 class ListingScreen extends StatefulWidget {
-  const ListingScreen({super.key, required this.property, this.school, this.userId, this.rooms, this.savedIds});
+  const ListingScreen({
+    super.key,
+    required this.property,
+    this.school,
+    this.userId,
+    this.rooms,
+    this.savedIds,
+    this.landlord,
+  });
 
   final Property property;
 
@@ -36,6 +45,9 @@ class ListingScreen extends StatefulWidget {
   /// Only set in tests. Normally loaded from Firestore.
   final Stream<List<Room>>? rooms;
   final Stream<List<String>>? savedIds;
+
+  /// Public landlord info: "Listed by Nathan" and the "Verified owner" chip. Null hides both.
+  final LandlordInfo? landlord;
 
   @override
   State<ListingScreen> createState() => _ListingScreenState();
@@ -108,6 +120,10 @@ class _ListingScreenState extends State<ListingScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(p.name, style: AppText.title.copyWith(fontSize: 28, letterSpacing: -0.7)),
+            if (widget.landlord != null && widget.landlord!.name.isNotEmpty) ...[
+              const SizedBox(height: 4),
+              Text('Listed by ${widget.landlord!.firstName}', style: AppText.secondary),
+            ],
             const SizedBox(height: 8),
             Wrap(
               spacing: 6,
@@ -116,6 +132,7 @@ class _ListingScreenState extends State<ListingScreen> {
                 // With no rooms the tags sit up here (4b); otherwise they go under the Room Map (4).
                 if (!hasRooms) ...tags,
                 // shortcut: reviews come in Week 3, so every house is "New" for now.
+                if (widget.landlord?.verified ?? false) const _VerifiedChip(),
                 const _WhiteChip('New · no reviews yet'),
                 if (hasRooms) FreshnessBadge(checkedAt: lastChecked(p, stats), pill: true),
               ],
@@ -328,6 +345,28 @@ class _WhiteChip extends StatelessWidget {
       alignment: Alignment.center,
       decoration: BoxDecoration(color: AppColors.card, borderRadius: BorderRadius.circular(15)),
       child: Text(label, style: AppText.small.copyWith(color: AppColors.textSecondary)),
+    );
+  }
+}
+
+/// White pill with a lagoon shield: "Verified owner".
+class _VerifiedChip extends StatelessWidget {
+  const _VerifiedChip();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 30,
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      decoration: BoxDecoration(color: AppColors.card, borderRadius: BorderRadius.circular(15)),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(CupertinoIcons.checkmark_shield, size: 15, color: AppColors.lagoon),
+          const SizedBox(width: 5),
+          Text('Verified owner', style: AppText.small),
+        ],
+      ),
     );
   }
 }

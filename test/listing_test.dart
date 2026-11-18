@@ -8,6 +8,7 @@ import 'package:boardmate/models/school.dart';
 import 'package:boardmate/screens/tenant/home_logic.dart';
 import 'package:boardmate/screens/tenant/listing_screen.dart';
 import 'package:boardmate/screens/tenant/share_house.dart';
+import 'package:boardmate/services/landlord_service.dart';
 
 void main() {
   setUpAll(() => GoogleFonts.config.allowRuntimeFetching = false);
@@ -36,6 +37,7 @@ void main() {
           userId: 'u1',
           rooms: Stream.value(rooms),
           savedIds: Stream.value(const []),
+          landlord: const LandlordInfo(name: 'Nathan Grande', verified: true),
         ),
       ),
     );
@@ -75,12 +77,18 @@ void main() {
     expect(find.text('GF'), findsOneWidget);
     expect(find.text('1 room open from'), findsOneWidget);
     expect(find.text('Plan a visit'), findsOneWidget);
-    expect(find.text('Open'), findsWidgets); // the first open room is picked
+    expect(find.text('Listed by Nathan'), findsOneWidget);
+    expect(find.text('Verified owner'), findsOneWidget);
 
+    // Tapping a room opens its sheet with the real monthly cost.
     await tester.tap(find.bySemanticsLabel('Room 2, taken'));
-    await tester.pump();
-    expect(find.text('Taken'), findsWidgets);
-    expect(find.textContaining('2nd floor · Solo room'), findsOneWidget);
+    await tester.pumpAndSettle();
+    expect(find.text('2nd floor · solo room · shared CR'), findsOneWidget);
+    expect(find.text('Real monthly cost'), findsOneWidget);
+    expect(find.text('Ask about Room 2'), findsOneWidget);
+    expect(find.text('Never send a deposit before you visit.'), findsOneWidget);
+    await tester.tap(find.bySemanticsLabel('Close'));
+    await tester.pumpAndSettle();
 
     await tester.tap(find.text('Plan a visit'));
     await tester.pumpAndSettle();

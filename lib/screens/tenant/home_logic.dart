@@ -121,3 +121,43 @@ class LiveStats {
     );
   }
 }
+
+/// What the student narrowed the list down to (filter sheet and map chips).
+class HomeFilters {
+  const HomeFilters({this.openOnly = false, this.maxPrice, this.tags = const {}});
+
+  /// Hide houses with no open room.
+  final bool openOnly;
+
+  /// Only houses whose cheapest room is at most this (pesos a month).
+  final int? maxPrice;
+
+  /// Must have all of these tags, like "Girls only" or "Wi-Fi".
+  final Set<String> tags;
+
+  bool get isEmpty => !openOnly && maxPrice == null && tags.isEmpty;
+
+  /// How many filters are on, for the badge on the filter button.
+  int get count => (openOnly ? 1 : 0) + (maxPrice == null ? 0 : 1) + tags.length;
+
+  HomeFilters copyWith({bool? openOnly, int? Function()? maxPrice, Set<String>? tags}) => HomeFilters(
+    openOnly: openOnly ?? this.openOnly,
+    maxPrice: maxPrice == null ? this.maxPrice : maxPrice(),
+    tags: tags ?? this.tags,
+  );
+}
+
+/// The price a student would pay at least: the cheapest open room, or the house's lowest price.
+int fromPrice(Property p, HouseRooms? rooms) => rooms?.cheapestOpen ?? p.priceMin;
+
+List<Property> applyFilters(List<Property> places, Map<String, HouseRooms> rooms, HomeFilters f) {
+  if (f.isEmpty) return places;
+  final wanted = {for (final t in f.tags) t.toLowerCase()};
+  return places.where((p) {
+    final r = rooms[p.id];
+    if (f.openOnly && (r?.open ?? 0) == 0) return false;
+    if (f.maxPrice != null && fromPrice(p, r) > f.maxPrice!) return false;
+    final has = {for (final t in p.tags) t.toLowerCase()};
+    return has.containsAll(wanted);
+  }).toList();
+}

@@ -5,6 +5,7 @@ import '../../models/property.dart' show formatPesos;
 import '../../models/school.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_text_styles.dart';
+import '../../widgets/filter_button.dart';
 import '../../widgets/wordmark.dart';
 import 'home_logic.dart';
 
@@ -20,6 +21,7 @@ class HomeHeader extends StatelessWidget {
     required this.onSchool,
     required this.onBell,
     required this.onFilters,
+    this.filterCount = 0,
     required this.onExpand,
   });
 
@@ -34,6 +36,9 @@ class HomeHeader extends StatelessWidget {
   final ValueChanged<School?> onSchool;
   final VoidCallback onBell;
   final VoidCallback onFilters;
+
+  /// How many filters are on, shown on the filter button.
+  final int filterCount;
 
   /// Slim bar tapped: scroll back to the top.
   final VoidCallback onExpand;
@@ -115,7 +120,7 @@ class HomeHeader extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 8),
-              _CircleIcon(icon: CupertinoIcons.slider_horizontal_3, label: 'Filters', onTap: onFilters, square: true),
+              FilterButton(count: filterCount, onTap: onFilters),
             ],
           ),
         ],
@@ -363,20 +368,16 @@ class _LiveDotState extends State<_LiveDot> with SingleTickerProviderStateMixin 
   }
 }
 
-/// White 44–48px button with an icon (bell, filters).
+/// White 44px round button with an icon (the bell).
 class _CircleIcon extends StatelessWidget {
-  const _CircleIcon({required this.icon, required this.label, required this.onTap, this.square = false});
+  const _CircleIcon({required this.icon, required this.label, required this.onTap});
 
   final IconData icon;
   final String label;
   final VoidCallback onTap;
 
-  /// Rounded square (filters) instead of a circle (bell).
-  final bool square;
-
   @override
   Widget build(BuildContext context) {
-    final size = square ? 48.0 : 44.0;
     return Semantics(
       button: true,
       label: label,
@@ -384,9 +385,9 @@ class _CircleIcon extends StatelessWidget {
       child: GestureDetector(
         onTap: onTap,
         child: Container(
-          width: size,
-          height: size,
-          decoration: BoxDecoration(color: AppColors.card, borderRadius: BorderRadius.circular(square ? 16 : 22)),
+          width: 44,
+          height: 44,
+          decoration: const BoxDecoration(color: AppColors.card, shape: BoxShape.circle),
           child: Icon(icon, size: 20, color: AppColors.ink),
         ),
       ),

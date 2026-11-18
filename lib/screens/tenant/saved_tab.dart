@@ -4,6 +4,7 @@ import '../../models/app_user.dart';
 import '../../models/property.dart';
 import '../../models/room.dart';
 import '../../models/school.dart';
+import '../../services/landlord_service.dart';
 import '../../services/property_service.dart';
 import '../../services/room_service.dart';
 import '../../services/saved_service.dart';
@@ -16,7 +17,15 @@ import 'house_card.dart';
 
 /// Saved tab: the houses the student hearted, newest first.
 class SavedTab extends StatefulWidget {
-  const SavedTab({super.key, required this.profile, this.properties, this.rooms, this.savedIds, this.school});
+  const SavedTab({
+    super.key,
+    required this.profile,
+    this.properties,
+    this.rooms,
+    this.savedIds,
+    this.school,
+    this.landlords,
+  });
 
   final AppUser profile;
 
@@ -25,6 +34,7 @@ class SavedTab extends StatefulWidget {
   final Stream<List<Room>>? rooms;
   final Stream<List<String>>? savedIds;
   final Stream<AppUser?>? school;
+  final Stream<Map<String, LandlordInfo>>? landlords;
 
   @override
   State<SavedTab> createState() => _SavedTabState();
@@ -36,6 +46,7 @@ class _SavedTabState extends State<SavedTab> {
   late final _savedIds = widget.savedIds ?? SavedService().watchIds(widget.profile.uid);
   // The school can change on Home, so follow the live profile for walk times.
   late final _profile = widget.school ?? UserService().watch(widget.profile.uid);
+  late final _landlords = widget.landlords ?? LandlordService().watchAll();
 
   @override
   Widget build(BuildContext context) {
@@ -51,13 +62,16 @@ class _SavedTabState extends State<SavedTab> {
               builder: (context, rooms) => StreamBuilder<AppUser?>(
                 stream: _profile,
                 initialData: widget.profile,
-                builder: (context, me) => ListView(
-                  padding: const EdgeInsets.fromLTRB(20, 8, 20, BmTabScaffold.bottomSpace),
-                  children: [
-                    Text('Saved', style: AppText.largeTitle),
-                    const SizedBox(height: 16),
-                    ..._body(saved, places, rooms, schoolById(me.data?.school)),
-                  ],
+                builder: (context, me) => StreamBuilder<Map<String, LandlordInfo>>(
+                  stream: _landlords,
+                  builder: (context, landlords) => ListView(
+                    padding: const EdgeInsets.fromLTRB(20, 8, 20, BmTabScaffold.bottomSpace),
+                    children: [
+                      Text('Saved', style: AppText.largeTitle),
+                      const SizedBox(height: 16),
+                      ..._body(saved, places, rooms, schoolById(me.data?.school), landlords.data ?? const {}),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -72,6 +86,7 @@ class _SavedTabState extends State<SavedTab> {
     AsyncSnapshot<List<Property>> places,
     AsyncSnapshot<List<Room>> rooms,
     School? school,
+    Map<String, LandlordInfo> landlords,
   ) {
     if (saved.hasError || places.hasError) {
       return [
@@ -105,7 +120,14 @@ class _SavedTabState extends State<SavedTab> {
       for (final p in list)
         Padding(
           padding: const EdgeInsets.only(bottom: 16),
-          child: HouseCard(property: p, rooms: byHouse[p.id], school: school, userId: widget.profile.uid, saved: true),
+          child: HouseCard(
+            property: p,
+            rooms: byHouse[p.id],
+            school: school,
+            userId: widget.profile.uid,
+            saved: true,
+            landlord: landlords[p.landlordId],
+          ),
         ),
     ];
   }

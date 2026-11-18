@@ -1,16 +1,31 @@
 import 'package:cupertino_ui/cupertino_ui.dart';
 
 import '../../models/app_user.dart';
+import '../../services/landlord_service.dart';
 import '../../widgets/bm_tab_scaffold.dart';
 import '../shared/placeholder_tab.dart';
 import '../shared/profile_tab.dart';
 import 'dashboard_tab.dart';
 
 /// Landlord mode: the four bottom tabs from the landlord mockup.
-class LandlordShell extends StatelessWidget {
+class LandlordShell extends StatefulWidget {
   const LandlordShell({super.key, required this.profile});
 
   final AppUser profile;
+
+  @override
+  State<LandlordShell> createState() => _LandlordShellState();
+}
+
+class _LandlordShellState extends State<LandlordShell> {
+  AppUser get profile => widget.profile;
+
+  @override
+  void initState() {
+    super.initState();
+    // Students see this name on the house page. Failing is harmless: it retries next time.
+    LandlordService().publish(profile.uid, profile.name).ignore();
+  }
 
   @override
   Widget build(BuildContext context) {

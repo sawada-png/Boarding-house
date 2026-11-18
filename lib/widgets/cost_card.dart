@@ -7,15 +7,21 @@ import '../theme/app_text_styles.dart';
 
 /// One line on the cost card, like "Electricity · own meter   ~₱600".
 class CostLine {
-  const CostLine(this.label, this.amount, {this.estimate = false});
+  const CostLine(this.label, this.amount, {this.estimate = false}) : note = null;
 
   /// Shown as "included" in green; adds nothing to the total.
-  const CostLine.included(this.label) : amount = null, estimate = false;
+  const CostLine.included(this.label) : amount = null, estimate = false, note = 'included';
+
+  /// A word instead of a price, like "separate" for water paid on its own; adds nothing to the total.
+  const CostLine.note(this.label, String this.note) : amount = null, estimate = false;
 
   final String label;
 
-  /// Pesos per month. Null = included.
+  /// Pesos per month. Null = no amount (see [note]).
   final int? amount;
+
+  /// "included" or "separate" when there is no amount.
+  final String? note;
 
   /// Adds "~" in front: the landlord's guess, like the electric bill.
   final bool estimate;
@@ -62,8 +68,12 @@ class CostCard extends StatelessWidget {
                 children: [
                   Expanded(child: Text(line.label, style: lineStyle)),
                   Text(
-                    line.amount == null ? 'included' : '${line.estimate ? '~' : ''}₱${formatPesos(line.amount!)}',
-                    style: line.amount == null ? lineStyle.copyWith(color: AppColors.onInkGood) : lineStyle,
+                    line.amount == null ? line.note ?? '' : '${line.estimate ? '~' : ''}₱${formatPesos(line.amount!)}',
+                    style: line.amount != null
+                        ? lineStyle
+                        : lineStyle.copyWith(
+                            color: line.note == 'included' ? AppColors.onInkGood : AppColors.onInkMuted,
+                          ),
                   ),
                 ],
               ),

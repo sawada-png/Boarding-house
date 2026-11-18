@@ -2,6 +2,7 @@ import 'package:cupertino_ui/cupertino_ui.dart';
 
 import '../../models/property.dart';
 import '../../models/school.dart';
+import '../../services/landlord_service.dart';
 import '../../services/saved_service.dart';
 import '../../widgets/listing_card.dart';
 import '../shared/dialogs.dart';
@@ -18,6 +19,7 @@ class HouseCard extends StatelessWidget {
     required this.school,
     required this.userId,
     required this.saved,
+    this.landlord,
   });
 
   final Property property;
@@ -28,6 +30,9 @@ class HouseCard extends StatelessWidget {
   final String userId;
   final bool saved;
 
+  /// Public landlord info, for the "Verified owner" note. Null if not loaded.
+  final LandlordInfo? landlord;
+
   @override
   Widget build(BuildContext context) {
     final p = property;
@@ -36,7 +41,11 @@ class HouseCard extends StatelessWidget {
     return ListingCard(
       name: p.name,
       // shortcut: reviews come in Week 3, so every house is "New" for now.
-      subtitle: 'New · ${p.area.isEmpty ? 'Puerto Princesa' : p.area}',
+      subtitle: [
+        'New',
+        if (p.area.isNotEmpty) p.area else 'Puerto Princesa',
+        if (landlord?.verified ?? false) 'Verified owner',
+      ].join(' · '),
       fromPrice: '₱${formatPesos(r?.cheapestOpen ?? p.priceMin)}',
       photoUrl: p.photos.isEmpty ? null : p.photos.first,
       walkText: s == null ? null : walkText(distanceTo(s, p), s),
@@ -47,7 +56,7 @@ class HouseCard extends StatelessWidget {
       onSave: () => toggleSaved(context, userId: userId, propertyId: p.id, saved: !saved),
       onTap: () => Navigator.of(context, rootNavigator: true).push(
         CupertinoPageRoute(
-          builder: (_) => ListingScreen(property: p, school: s, userId: userId),
+          builder: (_) => ListingScreen(property: p, school: s, userId: userId, landlord: landlord),
         ),
       ),
     );

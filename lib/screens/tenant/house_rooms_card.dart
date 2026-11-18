@@ -5,10 +5,9 @@ import '../../models/room.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_text_styles.dart';
 import '../../widgets/dashed_box.dart';
-import '../../widgets/photo_box.dart';
 import '../../widgets/room_map.dart';
-import '../../widgets/status_badge.dart';
 import '../shared/dialogs.dart';
+import 'room_sheet.dart';
 
 /// Turns rooms into Room Map floors: top floor first, only floors that have rooms.
 List<RoomMapFloor> roomMapFloors(List<Room> rooms) {
@@ -54,31 +53,19 @@ class _HouseRoomsCardState extends State<HouseRoomsCard> {
     if (rooms.isEmpty) return const _NoRooms();
 
     final open = rooms.where((r) => r.available).length;
-    // Rooms can be deleted while the page is open, so fall back to the first open room.
-    final selected =
-        rooms.where((r) => r.id == _selectedId).firstOrNull ??
-        rooms.where((r) => r.available).firstOrNull ??
-        rooms.first;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        RoomMap(
-          floors: roomMapFloors(rooms),
-          selectedId: selected.id,
-          onTap: (t) => setState(() => _selectedId = t.id),
-          trailing: Text(
-            '$open of ${rooms.length} open',
-            style: AppText.label.copyWith(
-              fontSize: 13,
-              color: open == 0 ? AppColors.textSecondary : AppColors.lagoonDark,
-            ),
-          ),
-          hint: 'Tap a room to see its photos and price.',
-        ),
-        const SizedBox(height: 12),
-        _RoomDetails(room: selected),
-      ],
+    return RoomMap(
+      floors: roomMapFloors(rooms),
+      selectedId: _selectedId,
+      onTap: (t) {
+        setState(() => _selectedId = t.id);
+        showRoomSheet(context, rooms.firstWhere((r) => r.id == t.id));
+      },
+      trailing: Text(
+        '$open of ${rooms.length} open',
+        style: AppText.label.copyWith(fontSize: 13, color: open == 0 ? AppColors.textSecondary : AppColors.lagoonDark),
+      ),
+      hint: 'Tap a room to see photos and the real monthly cost.',
     );
   }
 }
@@ -144,58 +131,6 @@ class _NoRooms extends StatelessWidget {
                 border: Border.all(color: AppColors.border, width: 1.5),
               ),
               child: Text('Ask the owner which rooms are open', style: AppText.label),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-/// Photos, open/taken, type and price of the picked room.
-class _RoomDetails extends StatelessWidget {
-  const _RoomDetails({required this.room});
-
-  final Room room;
-
-  @override
-  Widget build(BuildContext context) {
-    final perPerson = room.type == RoomType.bedspace ? ' per person' : '';
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(color: AppColors.card, borderRadius: BorderRadius.circular(24)),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            height: 112,
-            child: room.photos.isEmpty
-                ? const PhotoBox(hint: 'Room photos', sand: true, width: 112, radius: 14)
-                : ListView.separated(
-                    // Key resets the scroll when another room is picked.
-                    key: ValueKey(room.id),
-                    scrollDirection: Axis.horizontal,
-                    itemCount: room.photos.length,
-                    separatorBuilder: (_, _) => const SizedBox(width: 8),
-                    itemBuilder: (_, i) => PhotoBox(imageUrl: room.photos[i], width: 112, radius: 14),
-                  ),
-          ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              Flexible(child: Text(room.name, style: AppText.cardTitle)),
-              const SizedBox(width: 8),
-              StatusBadge.room(open: room.available),
-            ],
-          ),
-          const SizedBox(height: 6),
-          Text('${room.floor.label} · ${room.summary}', style: AppText.secondary.copyWith(height: 1.45)),
-          const SizedBox(height: 6),
-          Text.rich(
-            TextSpan(
-              text: '₱${formatPesos(room.monthlyPrice)} ',
-              style: AppText.price.copyWith(fontSize: 16),
-              children: [TextSpan(text: '/ month$perPerson', style: AppText.secondary.copyWith(fontSize: 15))],
             ),
           ),
         ],

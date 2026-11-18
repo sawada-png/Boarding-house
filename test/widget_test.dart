@@ -6,6 +6,7 @@ import 'package:boardmate/models/app_user.dart';
 import 'package:boardmate/models/property.dart';
 import 'package:boardmate/models/room.dart';
 import 'package:boardmate/models/school.dart';
+import 'package:boardmate/services/landlord_service.dart';
 import 'package:boardmate/screens/tenant/home_logic.dart';
 import 'package:boardmate/screens/tenant/home_tab.dart';
 import 'package:boardmate/widgets/room_dots.dart';
@@ -69,6 +70,7 @@ void main() {
       properties: Stream.value(places),
       rooms: Stream.value(rooms),
       savedIds: Stream.value(const ['walk']),
+      landlords: Stream.value(const {'l1': LandlordInfo(name: 'Nathan Grande', verified: true)}),
     ),
   );
 
@@ -89,7 +91,7 @@ void main() {
     expect(y('Walkable House'), lessThan(y('Full House'))); // full goes last even though it's closer
     expect(find.text('Full'), findsOneWidget);
     expect(find.text('1 of 2 open'), findsOneWidget);
-    expect(find.text('New · Tiniguiban'), findsOneWidget);
+    expect(find.text('New · Tiniguiban · Verified owner'), findsOneWidget);
     expect(find.textContaining('min walk to PSU'), findsNWidgets(3));
     expect(find.bySemanticsLabel('Saved. Tap to remove'), findsOneWidget);
   });
