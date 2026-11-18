@@ -25,9 +25,7 @@ class PinMap extends StatelessWidget {
         initialZoom: pin == null ? 14 : 16,
         onTap: onTap == null ? null : (_, point) => onTap!(point),
         interactionOptions: InteractionOptions(
-          flags: interactive
-              ? InteractiveFlag.all & ~InteractiveFlag.rotate
-              : InteractiveFlag.none,
+          flags: interactive ? InteractiveFlag.all & ~InteractiveFlag.rotate : InteractiveFlag.none,
         ),
       ),
       children: [

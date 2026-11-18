@@ -32,6 +32,7 @@ class _PropertyFormScreenState extends State<PropertyFormScreen> {
   late final Property? _old = widget.existing;
   late final _name = TextEditingController(text: _old?.name);
   late final _description = TextEditingController(text: _old?.description);
+  late final _area = TextEditingController(text: _old?.area);
   late final _priceMin = TextEditingController(text: _old == null ? '' : '${_old.priceMin}');
   late final _priceMax = TextEditingController(text: _old == null ? '' : '${_old.priceMax}');
 
@@ -42,7 +43,7 @@ class _PropertyFormScreenState extends State<PropertyFormScreen> {
 
   @override
   void dispose() {
-    for (final c in [_name, _description, _priceMin, _priceMax]) {
+    for (final c in [_name, _area, _description, _priceMin, _priceMax]) {
       c.dispose();
     }
     super.dispose();
@@ -75,6 +76,7 @@ class _PropertyFormScreenState extends State<PropertyFormScreen> {
           id: _old?.id ?? '',
           landlordId: widget.landlordId,
           name: _name.text.trim(),
+          area: _area.text.trim(),
           description: _description.text.trim(),
           latitude: _pin!.latitude,
           longitude: _pin!.longitude,
@@ -139,6 +141,14 @@ class _PropertyFormScreenState extends State<PropertyFormScreen> {
             ),
             const SizedBox(height: 24),
 
+            LabeledField(
+              label: 'Area / barangay (optional)',
+              controller: _area,
+              placeholder: 'Mandaragat',
+              textCapitalization: TextCapitalization.words,
+            ),
+            const SizedBox(height: 24),
+
             FormSectionLabel('Location', hint: 'Students use this to see how far it is from campus.'),
             _LocationBox(pin: _pin, onTap: _pickLocation),
             const SizedBox(height: 24),
@@ -191,8 +201,7 @@ class _PropertyFormScreenState extends State<PropertyFormScreen> {
               loading: _saving,
               onPressed: _save,
             ),
-            if (_old != null)
-              DeleteTextButton(label: 'Delete boarding house', onPressed: _saving ? null : _delete),
+            if (_old != null) DeleteTextButton(label: 'Delete boarding house', onPressed: _saving ? null : _delete),
           ],
         ),
       ),
@@ -257,10 +266,7 @@ class _LocationBox extends StatelessWidget {
                         top: 8,
                         child: Container(
                           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                          decoration: BoxDecoration(
-                            color: AppColors.card,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
+                          decoration: BoxDecoration(color: AppColors.card, borderRadius: BorderRadius.circular(10)),
                           child: Text('Change', style: AppText.small.copyWith(color: AppColors.lagoon)),
                         ),
                       ),

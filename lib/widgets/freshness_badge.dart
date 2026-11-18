@@ -5,13 +5,19 @@ import '../theme/app_text_styles.dart';
 
 /// Green dot + "Rooms checked 2d ago": how recently the landlord confirmed the rooms.
 class FreshnessBadge extends StatelessWidget {
-  const FreshnessBadge({super.key, required this.checkedAt, this.short = false, this.pill = false, this.now});
+  const FreshnessBadge({
+    super.key,
+    required this.checkedAt,
+    this.prefix = 'Rooms checked',
+    this.pill = false,
+    this.now,
+  });
 
   /// Null when the landlord never confirmed.
   final DateTime? checkedAt;
 
-  /// "Checked 2d ago" instead of "Rooms checked 2d ago".
-  final bool short;
+  /// Words before the time: "Rooms checked 2d ago", "Checked 2d ago", or empty for just "2d ago".
+  final String prefix;
 
   /// White pill around it (house page trust chips).
   final bool pill;
@@ -27,7 +33,11 @@ class FreshnessBadge extends StatelessWidget {
     final at = checkedAt;
     final days = at == null ? null : (now ?? DateTime.now()).difference(at).inDays;
     final fresh = days != null && days <= staleAfterDays;
-    final text = at == null ? 'Not checked yet' : '${short ? 'Checked' : 'Rooms checked'} ${agoText(days!)}';
+    final text = at == null
+        ? 'Not checked yet'
+        : prefix.isEmpty
+        ? agoText(days!)
+        : '$prefix ${agoText(days!)}';
 
     final row = Row(
       mainAxisSize: MainAxisSize.min,
@@ -38,12 +48,7 @@ class FreshnessBadge extends StatelessWidget {
           decoration: BoxDecoration(color: fresh ? AppColors.lagoon : AppColors.orange, shape: BoxShape.circle),
         ),
         const SizedBox(width: 5),
-        Text(
-          text,
-          style: pill
-              ? AppText.small
-              : AppText.secondary.copyWith(fontSize: 12),
-        ),
+        Text(text, style: pill ? AppText.small : AppText.secondary.copyWith(fontSize: 12)),
       ],
     );
     if (!pill) return row;

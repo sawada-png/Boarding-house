@@ -48,10 +48,7 @@ class LabeledField extends StatelessWidget {
                   padding: const EdgeInsets.only(left: 14),
                   child: Text(prefixText!, style: AppText.body.copyWith(color: AppColors.textSecondary)),
                 ),
-          decoration: BoxDecoration(
-            color: AppColors.card,
-            borderRadius: BorderRadius.circular(16),
-          ),
+          decoration: BoxDecoration(color: AppColors.card, borderRadius: BorderRadius.circular(16)),
         ),
       ],
     );

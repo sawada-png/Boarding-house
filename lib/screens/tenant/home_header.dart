@@ -93,11 +93,18 @@ class HomeHeader extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: Text.rich(TextSpan(
-                  text: 'board',
-                  style: AppText.section.copyWith(fontSize: 22, letterSpacing: -0.5),
-                  children: const [TextSpan(text: 'mate', style: TextStyle(color: AppColors.lagoon))],
-                )),
+                child: Text.rich(
+                  TextSpan(
+                    text: 'board',
+                    style: AppText.section.copyWith(fontSize: 22, letterSpacing: -0.5),
+                    children: const [
+                      TextSpan(
+                        text: 'mate',
+                        style: TextStyle(color: AppColors.lagoon),
+                      ),
+                    ],
+                  ),
+                ),
               ),
               _CircleIcon(icon: CupertinoIcons.bell, label: 'Notifications', onTap: onBell),
             ],
@@ -110,7 +117,7 @@ class HomeHeader extends StatelessWidget {
               Expanded(
                 child: CupertinoSearchTextField(
                   controller: search,
-                  placeholder: 'Search boarding houses or areas',
+                  placeholder: 'Search houses or areas',
                   backgroundColor: AppColors.card,
                   borderRadius: BorderRadius.circular(16),
                   style: AppText.body.copyWith(fontSize: 15),
@@ -174,42 +181,71 @@ class _LiveBoard extends StatelessWidget {
               const SizedBox(width: 8),
               const _LiveDot(),
               const SizedBox(width: 6),
-              Text('Live', style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.onInkGood)),
+              Text(
+                'Live',
+                style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.onInkGood),
+              ),
             ],
           ),
           const SizedBox(height: 12),
-          Text(school == null ? 'In Puerto Princesa right now' : 'Near ${school!.code} right now',
-              style: GoogleFonts.inter(fontSize: 13, color: AppColors.onInkMuted)),
+          Text(
+            school == null ? 'In Puerto Princesa right now' : 'Near ${school!.code} right now',
+            style: GoogleFonts.inter(fontSize: 13, color: AppColors.onInkMuted),
+          ),
           const SizedBox(height: 2),
-          Text.rich(TextSpan(
-            style: AppText.largeTitle.copyWith(color: AppColors.card),
-            children: [
-              TextSpan(text: s == null ? '–' : '${s.open}', style: const TextStyle(color: AppColors.onInkGood)),
-              TextSpan(text: s?.open == 1 ? ' room open' : ' rooms open'),
-            ],
-          )),
+          // Counts up quickly to the new number when the school changes.
+          TweenAnimationBuilder<int>(
+            tween: IntTween(begin: 0, end: s?.open ?? 0),
+            duration: const Duration(milliseconds: 600),
+            curve: Curves.easeOut,
+            builder: (context, value, _) => Text.rich(
+              TextSpan(
+                style: AppText.largeTitle.copyWith(color: AppColors.card),
+                children: [
+                  TextSpan(
+                    text: s == null ? '–' : '$value',
+                    style: const TextStyle(color: AppColors.onInkGood),
+                  ),
+                  TextSpan(text: s?.open == 1 ? ' room open' : ' rooms open'),
+                ],
+              ),
+            ),
+          ),
           const SizedBox(height: 12),
-          _TileStrip(tiles: s?.tiles ?? const []),
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 300),
+            child: _TileStrip(key: ValueKey(school?.id), tiles: s?.tiles ?? const []),
+          ),
           const SizedBox(height: 12),
           Row(
             children: [
               Expanded(
-                child: Text.rich(TextSpan(style: muted, children: [
+                child: Text.rich(
                   TextSpan(
-                    text: '+${s?.updatedToday ?? 0}',
-                    style: const TextStyle(color: AppColors.onInkGood, fontWeight: FontWeight.w600),
+                    style: muted,
+                    children: [
+                      TextSpan(
+                        text: '+${s?.openedToday ?? 0}',
+                        style: const TextStyle(color: AppColors.onInkGood, fontWeight: FontWeight.w600),
+                      ),
+                      const TextSpan(text: ' since yesterday'),
+                    ],
                   ),
-                  const TextSpan(text: ' updated today'),
-                ])),
+                ),
               ),
               if (s?.cheapest != null)
-                Text.rich(TextSpan(style: muted, children: [
-                  const TextSpan(text: 'cheapest '),
+                Text.rich(
                   TextSpan(
-                    text: '₱${formatPesos(s!.cheapest!)}',
-                    style: const TextStyle(color: AppColors.card, fontWeight: FontWeight.w600),
+                    style: muted,
+                    children: [
+                      const TextSpan(text: 'cheapest '),
+                      TextSpan(
+                        text: '₱${formatPesos(s!.cheapest!)}',
+                        style: const TextStyle(color: AppColors.card, fontWeight: FontWeight.w600),
+                      ),
+                    ],
                   ),
-                ])),
+                ),
             ],
           ),
         ],
@@ -220,7 +256,7 @@ class _LiveBoard extends StatelessWidget {
 
 /// 20 small slots, one per room: green = open, dark = taken, empty = no room.
 class _TileStrip extends StatelessWidget {
-  const _TileStrip({required this.tiles});
+  const _TileStrip({super.key, required this.tiles});
 
   final List<bool> tiles;
 
@@ -241,8 +277,8 @@ class _TileStrip extends StatelessWidget {
                   color: i >= tiles.length
                       ? AppColors.inkRaised
                       : tiles[i]
-                          ? AppColors.liveGreen
-                          : AppColors.inkLine,
+                      ? AppColors.liveGreen
+                      : AppColors.inkLine,
                   borderRadius: BorderRadius.circular(3),
                 ),
               ),
@@ -290,18 +326,50 @@ class _SchoolPill extends StatelessWidget {
   }
 }
 
-class _LiveDot extends StatelessWidget {
+/// Green dot with a soft ring that pulses, so "Live" feels live. Still when the phone asks for less motion.
+class _LiveDot extends StatefulWidget {
   const _LiveDot();
 
   @override
+  State<_LiveDot> createState() => _LiveDotState();
+}
+
+class _LiveDotState extends State<_LiveDot> with SingleTickerProviderStateMixin {
+  late final _pulse = AnimationController(vsync: this, duration: const Duration(milliseconds: 1400));
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (MediaQuery.of(context).disableAnimations) {
+      _pulse.stop();
+    } else if (!_pulse.isAnimating) {
+      _pulse.repeat();
+    }
+  }
+
+  @override
+  void dispose() {
+    _pulse.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 8,
-      height: 8,
-      decoration: const BoxDecoration(
-        color: AppColors.liveGreen,
-        shape: BoxShape.circle,
-        boxShadow: [BoxShadow(color: Color(0x402BA58F), spreadRadius: 4)],
+    return AnimatedBuilder(
+      animation: _pulse,
+      builder: (context, _) => Container(
+        width: 8,
+        height: 8,
+        decoration: BoxDecoration(
+          color: AppColors.liveGreen,
+          shape: BoxShape.circle,
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.liveGreen.withValues(alpha: 0.35 * (1 - _pulse.value)),
+              spreadRadius: 2 + 5 * _pulse.value,
+            ),
+          ],
+        ),
       ),
     );
   }

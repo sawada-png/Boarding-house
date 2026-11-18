@@ -65,10 +65,7 @@ class _ChooseRoleScreenState extends State<ChooseRoleScreen> {
               textCapitalization: TextCapitalization.words,
               style: AppText.body,
               padding: const EdgeInsets.all(14),
-              decoration: BoxDecoration(
-                color: AppColors.card,
-                borderRadius: BorderRadius.circular(12),
-              ),
+              decoration: BoxDecoration(color: AppColors.card, borderRadius: BorderRadius.circular(12)),
             ),
             const SizedBox(height: 28),
             Text('I am a...', style: AppText.label),
@@ -132,10 +129,7 @@ class _RoleCard extends StatelessWidget {
           decoration: BoxDecoration(
             color: AppColors.card,
             borderRadius: BorderRadius.circular(18),
-            border: Border.all(
-              color: selected ? AppColors.lagoon : AppColors.card,
-              width: 2,
-            ),
+            border: Border.all(color: selected ? AppColors.lagoon : AppColors.card, width: 2),
           ),
           child: Row(
             children: [

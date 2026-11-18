@@ -9,12 +9,7 @@ import 'photo_box.dart';
 /// Grid of photos with an "Add photos" tile and an × on each photo to remove it.
 /// The first photo is the cover.
 class PhotoPickerGrid extends StatelessWidget {
-  const PhotoPickerGrid({
-    super.key,
-    required this.photos,
-    required this.onChanged,
-    this.max = 10,
-  });
+  const PhotoPickerGrid({super.key, required this.photos, required this.onChanged, this.max = 10});
 
   final List<PickedPhoto> photos;
   final ValueChanged<List<PickedPhoto>> onChanged;
@@ -25,10 +20,7 @@ class PhotoPickerGrid extends StatelessWidget {
     final files = await ImagePicker().pickMultiImage(maxWidth: 1600, imageQuality: 80);
     if (files.isEmpty) return;
     final room = max - photos.length;
-    final added = [
-      for (final f in files.take(room))
-        PickedPhoto.local(await f.readAsBytes(), mimeType: f.mimeType),
-    ];
+    final added = [for (final f in files.take(room)) PickedPhoto.local(await f.readAsBytes(), mimeType: f.mimeType)];
     onChanged([...photos, ...added]);
   }
 
@@ -40,10 +32,7 @@ class PhotoPickerGrid extends StatelessWidget {
       physics: const NeverScrollableScrollPhysics(),
       mainAxisSpacing: 8,
       crossAxisSpacing: 8,
-      children: [
-        for (var i = 0; i < photos.length; i++) _tile(i),
-        if (photos.length < max) _addTile(),
-      ],
+      children: [for (var i = 0; i < photos.length; i++) _tile(i), if (photos.length < max) _addTile()],
     );
   }
 
@@ -54,9 +43,7 @@ class PhotoPickerGrid extends StatelessWidget {
       children: [
         ClipRRect(
           borderRadius: BorderRadius.circular(14),
-          child: photo.isUploaded
-              ? PhotoBox(imageUrl: photo.url)
-              : Image.memory(photo.bytes!, fit: BoxFit.cover),
+          child: photo.isUploaded ? PhotoBox(imageUrl: photo.url) : Image.memory(photo.bytes!, fit: BoxFit.cover),
         ),
         if (i == 0)
           Positioned(
@@ -64,10 +51,7 @@ class PhotoPickerGrid extends StatelessWidget {
             bottom: 6,
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-              decoration: BoxDecoration(
-                color: const Color(0xB31C1C1E),
-                borderRadius: BorderRadius.circular(8),
-              ),
+              decoration: BoxDecoration(color: const Color(0xB31C1C1E), borderRadius: BorderRadius.circular(8)),
               child: Text('Cover', style: AppText.small.copyWith(color: AppColors.card, fontSize: 11)),
             ),
           ),

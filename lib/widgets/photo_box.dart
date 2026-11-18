@@ -48,11 +48,7 @@ class PhotoBox extends StatelessWidget {
         height: height,
         child: imageUrl == null
             ? placeholder
-            : Image.network(
-                imageUrl!,
-                fit: BoxFit.cover,
-                errorBuilder: (_, _, _) => placeholder,
-              ),
+            : Image.network(imageUrl!, fit: BoxFit.cover, errorBuilder: (_, _, _) => placeholder),
       ),
     );
   }

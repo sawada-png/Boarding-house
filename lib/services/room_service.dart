@@ -13,28 +13,25 @@ class RoomService {
   Stream<List<Room>> watchForProperty(String propertyId) => _rooms
       .where('propertyId', isEqualTo: propertyId)
       .snapshots()
-      .map((snap) => snap.docs.map(Room.fromDoc).toList()
-        ..sort((a, b) => compareRoomNames(a.name, b.name)));
+      .map((snap) => snap.docs.map(Room.fromDoc).toList()..sort((a, b) => compareRoomNames(a.name, b.name)));
 
   /// Every room, used to count available rooms on the student home list.
-  Stream<List<Room>> watchAll() =>
-      _rooms.snapshots().map((snap) => snap.docs.map(Room.fromDoc).toList());
+  Stream<List<Room>> watchAll() => _rooms.snapshots().map((snap) => snap.docs.map(Room.fromDoc).toList());
 
   /// Adds a new room (when [room].id is empty) or updates an existing one. Uploads new photos first.
-  Future<void> save(Room room, List<PickedPhoto> photos) async {
+  /// [wasOpen] is whether the room was open before this save, so "opened at" is only set when it opens.
+  Future<void> save(Room room, List<PickedPhoto> photos, {bool wasOpen = false}) async {
     final isNew = room.id.isEmpty;
     final doc = isNew ? _rooms.doc() : _rooms.doc(room.id);
 
-    final urls = await _storage.uploadAll(
-      photos,
-      'boardmate/landlords/${room.landlordId}/rooms/${doc.id}',
-    );
+    final urls = await _storage.uploadAll(photos, 'boardmate/landlords/${room.landlordId}/rooms/${doc.id}');
 
     await doc.set({
       ...room.toMap(),
       'photos': urls,
       'updatedAt': FieldValue.serverTimestamp(),
       if (isNew) 'createdAt': FieldValue.serverTimestamp(),
+      if (room.available && !wasOpen) 'openedAt': FieldValue.serverTimestamp(),
     }, SetOptions(merge: true));
   }
 

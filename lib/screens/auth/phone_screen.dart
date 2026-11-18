@@ -40,7 +40,9 @@ class _PhoneScreenState extends State<PhoneScreen> {
       if (!mounted) return;
       await Navigator.push(
         context,
-        CupertinoPageRoute(builder: (_) => CodeScreen(phone: phone, checkCode: checkCode)),
+        CupertinoPageRoute(
+          builder: (_) => CodeScreen(phone: phone, checkCode: checkCode),
+        ),
       );
     } catch (e) {
       final message = authErrorMessage(e);
@@ -77,10 +79,7 @@ class _PhoneScreenState extends State<PhoneScreen> {
                   padding: const EdgeInsets.only(left: 14),
                   child: Text('🇵🇭', style: AppText.body.copyWith(fontSize: 20)),
                 ),
-                decoration: BoxDecoration(
-                  color: AppColors.card,
-                  borderRadius: BorderRadius.circular(12),
-                ),
+                decoration: BoxDecoration(color: AppColors.card, borderRadius: BorderRadius.circular(12)),
                 onSubmitted: (_) => _send(),
               ),
               const Spacer(),

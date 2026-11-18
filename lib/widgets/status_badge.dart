@@ -1,4 +1,4 @@
-﻿import 'package:cupertino_ui/cupertino_ui.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../theme/app_colors.dart';
@@ -8,9 +8,7 @@ class StatusBadge extends StatelessWidget {
   const StatusBadge({super.key, required this.label, this.muted = false});
 
   /// A room's open/taken badge.
-  const StatusBadge.room({super.key, required bool open})
-      : label = open ? 'Open' : 'Taken',
-        muted = !open;
+  const StatusBadge.room({super.key, required bool open}) : label = open ? 'Open' : 'Taken', muted = !open;
 
   final String label;
   final bool muted;

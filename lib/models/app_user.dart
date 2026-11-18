@@ -31,23 +31,23 @@ class AppUser {
   bool get isLandlord => role == UserRole.landlord;
 
   factory AppUser.fromMap(String uid, Map<String, dynamic> data) => AppUser(
-        uid: uid,
-        name: data['name'] as String? ?? '',
-        role: data['role'] == 'landlord' ? UserRole.landlord : UserRole.student,
-        phone: data['phone'] as String?,
-        email: data['email'] as String?,
-        loginType: data['loginType'] as String? ?? 'phone',
-        school: data['school'] as String?,
-        verified: data['verified'] as bool? ?? false,
-      );
+    uid: uid,
+    name: data['name'] as String? ?? '',
+    role: data['role'] == 'landlord' ? UserRole.landlord : UserRole.student,
+    phone: data['phone'] as String?,
+    email: data['email'] as String?,
+    loginType: data['loginType'] as String? ?? 'phone',
+    school: data['school'] as String?,
+    verified: data['verified'] as bool? ?? false,
+  );
 
   Map<String, dynamic> toMap() => {
-        'name': name,
-        'role': role.name,
-        'phone': phone,
-        'email': email,
-        'loginType': loginType,
-        'school': school,
-        'verified': verified,
-      };
+    'name': name,
+    'role': role.name,
+    'phone': phone,
+    'email': email,
+    'loginType': loginType,
+    'school': school,
+    'verified': verified,
+  };
 }

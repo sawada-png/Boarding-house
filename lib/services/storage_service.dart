@@ -13,19 +13,16 @@ class StorageService {
   /// Photos that are already uploaded keep their link.
   Future<List<String>> uploadAll(List<PickedPhoto> photos, String folder) {
     return Future.wait([
-      for (final photo in photos)
-        photo.isUploaded ? Future.value(photo.url!) : _upload(photo, folder),
+      for (final photo in photos) photo.isUploaded ? Future.value(photo.url!) : _upload(photo, folder),
     ]);
   }
 
   Future<String> _upload(PickedPhoto photo, String folder) async {
-    final request = http.MultipartRequest(
-      'POST',
-      Uri.parse('https://api.cloudinary.com/v1_1/$cloudinaryCloudName/image/upload'),
-    )
-      ..fields['upload_preset'] = cloudinaryUploadPreset
-      ..fields['folder'] = folder
-      ..files.add(http.MultipartFile.fromBytes('file', photo.bytes!, filename: 'photo.jpg'));
+    final request =
+        http.MultipartRequest('POST', Uri.parse('https://api.cloudinary.com/v1_1/$cloudinaryCloudName/image/upload'))
+          ..fields['upload_preset'] = cloudinaryUploadPreset
+          ..fields['folder'] = folder
+          ..files.add(http.MultipartFile.fromBytes('file', photo.bytes!, filename: 'photo.jpg'));
 
     final response = await http.Response.fromStream(await request.send());
     if (response.statusCode != 200) {

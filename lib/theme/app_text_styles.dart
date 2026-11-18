@@ -6,7 +6,12 @@ import 'app_colors.dart';
 /// Text styles from DESIGN.md: Bricolage Grotesque for headings, Inter for everything else.
 abstract final class AppText {
   static TextStyle _heading(double size, double spacing) => GoogleFonts.bricolageGrotesque(
-      fontSize: size, fontWeight: FontWeight.w800, letterSpacing: spacing, height: 1.05, color: AppColors.ink);
+    fontSize: size,
+    fontWeight: FontWeight.w800,
+    letterSpacing: spacing,
+    height: 1.05,
+    color: AppColors.ink,
+  );
 
   /// "Rooms near your campus." (38) and page titles.
   static TextStyle get largeTitle => _heading(34, -1);

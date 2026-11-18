@@ -2,17 +2,23 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 enum RoomType { bedspace, solo }
 
+/// Which floor a room is on, for the Room Map.
+enum RoomFloor {
+  ground('GF', 'Ground'),
+  second('2F', '2nd floor'),
+  third('3F', '3rd floor');
+
+  const RoomFloor(this.short, this.label);
+
+  /// "2F" on the Room Map.
+  final String short;
+
+  /// "2nd floor" on the room form.
+  final String label;
+}
+
 /// Ready-made "what's included" items a landlord can tap. They can also type their own.
-const roomIncludedOptions = [
-  'Bed',
-  'Mattress',
-  'Study table',
-  'Chair',
-  'Electric fan',
-  'Aircon',
-  'Cabinet',
-  'Window',
-];
+const roomIncludedOptions = ['Bed', 'Mattress', 'Study table', 'Chair', 'Electric fan', 'Aircon', 'Cabinet', 'Window'];
 
 /// A room inside a boarding house, saved in Firestore at rooms/{id}.
 class Room {
@@ -28,7 +34,9 @@ class Room {
     this.available = true,
     this.included = const [],
     this.photos = const [],
+    this.floor = RoomFloor.ground,
     this.updatedAt,
+    this.openedAt,
   });
 
   /// Empty until it's saved the first time.
@@ -54,6 +62,11 @@ class Room {
   final List<String> included;
   final List<String> photos;
 
+  final RoomFloor floor;
+
+  /// When the room last became open (added as open, or switched from taken). Null if unknown.
+  final DateTime? openedAt;
+
   /// When the landlord last saved this room. Null until the server sets it.
   final DateTime? updatedAt;
 
@@ -62,10 +75,10 @@ class Room {
 
   /// "Bedspace for 2 · own CR · study table, electric fan"
   String get summary => [
-        typeLabel,
-        privateCr ? 'own CR' : 'shared CR',
-        if (included.isNotEmpty) included.map((i) => i.toLowerCase()).join(', '),
-      ].join(' · ');
+    typeLabel,
+    privateCr ? 'own CR' : 'shared CR',
+    if (included.isNotEmpty) included.map((i) => i.toLowerCase()).join(', '),
+  ].join(' · ');
 
   factory Room.fromDoc(DocumentSnapshot<Map<String, dynamic>> doc) {
     final d = doc.data()!;
@@ -82,21 +95,24 @@ class Room {
       included: List<String>.from(d['included'] as List? ?? const []),
       photos: List<String>.from(d['photos'] as List? ?? const []),
       updatedAt: (d['updatedAt'] as Timestamp?)?.toDate(),
+      openedAt: (d['openedAt'] as Timestamp?)?.toDate(),
+      floor: RoomFloor.values.asNameMap()[d['floor']] ?? RoomFloor.ground,
     );
   }
 
   Map<String, dynamic> toMap() => {
-        'propertyId': propertyId,
-        'landlordId': landlordId,
-        'name': name,
-        'type': type.name,
-        'capacity': type == RoomType.solo ? 1 : capacity,
-        'monthlyPrice': monthlyPrice,
-        'crType': privateCr ? 'private' : 'shared',
-        'available': available,
-        'included': included,
-        'photos': photos,
-      };
+    'propertyId': propertyId,
+    'landlordId': landlordId,
+    'name': name,
+    'type': type.name,
+    'capacity': type == RoomType.solo ? 1 : capacity,
+    'monthlyPrice': monthlyPrice,
+    'crType': privateCr ? 'private' : 'shared',
+    'available': available,
+    'included': included,
+    'photos': photos,
+    'floor': floor.name,
+  };
 }
 
 /// Sorts "Room 2" before "Room 10" (plain text sorting would put 10 first).
@@ -105,14 +121,4 @@ int compareRoomNames(String a, String b) {
   final numberB = int.tryParse(RegExp(r'\d+').firstMatch(b)?.group(0) ?? '');
   if (numberA != null && numberB != null && numberA != numberB) return numberA.compareTo(numberB);
   return a.compareTo(b);
-}
-
-/// propertyId → how many of its rooms are available.
-/// Boarding houses with no rooms yet are left out.
-Map<String, int> countAvailableRooms(Iterable<Room> rooms) {
-  final counts = <String, int>{};
-  for (final room in rooms) {
-    counts[room.propertyId] = (counts[room.propertyId] ?? 0) + (room.available ? 1 : 0);
-  }
-  return counts;
 }

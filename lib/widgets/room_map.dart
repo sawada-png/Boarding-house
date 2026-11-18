@@ -1,10 +1,9 @@
-import 'dart:ui' show PathMetric;
-
 import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../theme/app_colors.dart';
 import '../theme/app_text_styles.dart';
+import 'dashed_box.dart';
 import 'striped_box.dart';
 
 /// One box on the Room Map.
@@ -20,10 +19,10 @@ class RoomMapTile {
 
   /// Shared space (kitchen, CR): drawn with a dashed outline, not tappable.
   const RoomMapTile.shared({required this.id, required this.detail})
-      : label = 'Shared',
-        open = false,
-        price = null,
-        shared = true;
+    : label = 'Shared',
+      open = false,
+      price = null,
+      shared = true;
 
   final String id;
 
@@ -108,34 +107,36 @@ class RoomMap extends StatelessWidget {
     final tiles = floor.tiles.isEmpty ? <RoomMapTile?>[null] : floor.tiles;
     for (var start = 0; start < tiles.length; start += _columns) {
       final chunk = tiles.skip(start).take(_columns).toList();
-      rows.add(Padding(
-        padding: const EdgeInsets.only(bottom: 6),
-        child: SizedBox(
-          height: 74,
-          child: Row(
-            children: [
-              SizedBox(
-                width: 26,
-                child: start == 0
-                    ? Text(floor.label, style: AppText.small.copyWith(fontSize: 11, color: AppColors.textSecondary))
-                    : null,
-              ),
-              for (var i = 0; i < _columns; i++) ...[
-                const SizedBox(width: 6),
-                Expanded(
-                  child: i < chunk.length && chunk[i] != null
-                      ? _Tile(
-                          tile: chunk[i]!,
-                          selected: chunk[i]!.id == selectedId,
-                          onTap: onTap == null || chunk[i]!.shared ? null : () => onTap!(chunk[i]!),
-                        )
-                      : const SizedBox(),
+      rows.add(
+        Padding(
+          padding: const EdgeInsets.only(bottom: 6),
+          child: SizedBox(
+            height: 74,
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 26,
+                  child: start == 0
+                      ? Text(floor.label, style: AppText.small.copyWith(fontSize: 11, color: AppColors.textSecondary))
+                      : null,
                 ),
+                for (var i = 0; i < _columns; i++) ...[
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: i < chunk.length && chunk[i] != null
+                        ? _Tile(
+                            tile: chunk[i]!,
+                            selected: chunk[i]!.id == selectedId,
+                            onTap: onTap == null || chunk[i]!.shared ? null : () => onTap!(chunk[i]!),
+                          )
+                        : const SizedBox(),
+                  ),
+                ],
               ],
-            ],
+            ),
           ),
         ),
-      ));
+      );
     }
     return rows;
   }
@@ -152,8 +153,7 @@ class _Tile extends StatelessWidget {
   Widget build(BuildContext context) {
     final Widget box;
     if (tile.shared) {
-      box = CustomPaint(
-        painter: _DashedBorderPainter(),
+      box = DashedBox(
         child: _content(AppColors.textSecondary, label: 'Shared', small: tile.detail),
       );
     } else if (tile.open) {
@@ -190,16 +190,27 @@ class _Tile extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, maxLines: 1, overflow: TextOverflow.ellipsis,
-              style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w600, color: color)),
+          Text(
+            label,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w600, color: color),
+          ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               if (price != null)
-                Text(price, style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w700, color: color)),
+                Text(
+                  price,
+                  style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w700, color: color),
+                ),
               if (small != null)
-                Text(small, maxLines: 2, overflow: TextOverflow.ellipsis,
-                    style: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.w500, height: 1.3, color: color)),
+                Text(
+                  small,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.w500, height: 1.3, color: color),
+                ),
             ],
           ),
         ],
@@ -214,19 +225,22 @@ class _Legend extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Widget item(Widget swatch, String text) => Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SizedBox(width: 10, height: 10, child: swatch),
-            const SizedBox(width: 4),
-            Text(text, style: AppText.secondary.copyWith(fontSize: 12)),
-          ],
-        );
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        SizedBox(width: 10, height: 10, child: swatch),
+        const SizedBox(width: 4),
+        Text(text, style: AppText.secondary.copyWith(fontSize: 12)),
+      ],
+    );
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        item(DecoratedBox(
-          decoration: BoxDecoration(color: AppColors.lagoon, borderRadius: BorderRadius.circular(3)),
-        ), 'Open'),
+        item(
+          DecoratedBox(
+            decoration: BoxDecoration(color: AppColors.lagoon, borderRadius: BorderRadius.circular(3)),
+          ),
+          'Open',
+        ),
         const SizedBox(width: 10),
         item(const StripedBox(radius: 3, stripe: 2), 'Taken'),
       ],
@@ -256,24 +270,4 @@ class _RoofPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_RoofPainter old) => false;
-}
-
-/// Dashed rounded outline for shared spaces.
-class _DashedBorderPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final rrect = RRect.fromRectAndRadius(Offset.zero & size, const Radius.circular(12)).deflate(0.75);
-    final paint = Paint()
-      ..color = const Color(0xFFC9D3D0)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.5;
-    for (final PathMetric metric in (Path()..addRRect(rrect)).computeMetrics()) {
-      for (double d = 0; d < metric.length; d += 8) {
-        canvas.drawPath(metric.extractPath(d, d + 4), paint);
-      }
-    }
-  }
-
-  @override
-  bool shouldRepaint(_DashedBorderPainter old) => false;
 }

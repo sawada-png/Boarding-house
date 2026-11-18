@@ -17,8 +17,7 @@ class PropertyService {
 
   /// Every boarding house, for the student home list.
   // shortcut: loads all of them; fine for one city, add paging past a few hundred.
-  Stream<List<Property>> watchAll() =>
-      _properties.snapshots().map((snap) => snap.docs.map(Property.fromDoc).toList());
+  Stream<List<Property>> watchAll() => _properties.snapshots().map((snap) => snap.docs.map(Property.fromDoc).toList());
 
   /// Adds a new boarding house (when [property].id is empty) or updates an existing one.
   /// Uploads new photos first, then saves.
@@ -26,10 +25,7 @@ class PropertyService {
     final isNew = property.id.isEmpty;
     final doc = isNew ? _properties.doc() : _properties.doc(property.id);
 
-    final urls = await _storage.uploadAll(
-      photos,
-      'boardmate/landlords/${property.landlordId}/properties/${doc.id}',
-    );
+    final urls = await _storage.uploadAll(photos, 'boardmate/landlords/${property.landlordId}/properties/${doc.id}');
 
     await doc.set({
       ...property.toMap(),

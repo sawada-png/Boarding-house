@@ -21,20 +21,8 @@ void main() {
   });
 
   test('Property form catches missing or wrong info', () {
-    String? check({
-      String name = 'House',
-      bool loc = true,
-      int photos = 1,
-      int? min = 3000,
-      int? max = 4500,
-    }) =>
-        checkPropertyForm(
-          name: name,
-          hasLocation: loc,
-          photoCount: photos,
-          priceMin: min,
-          priceMax: max,
-        );
+    String? check({String name = 'House', bool loc = true, int photos = 1, int? min = 3000, int? max = 4500}) =>
+        checkPropertyForm(name: name, hasLocation: loc, photoCount: photos, priceMin: min, priceMax: max);
 
     expect(check(), isNull);
     expect(check(name: '  '), isNotNull);

@@ -13,6 +13,8 @@ import '../../widgets/primary_button.dart';
 import '../../widgets/room_row.dart';
 import '../../widgets/rounded_card.dart';
 import '../../widgets/section_header.dart';
+import '../tenant/home_logic.dart';
+import '../tenant/listing_screen.dart';
 import 'property_form_screen.dart';
 import 'room_form_screen.dart';
 
@@ -67,16 +69,14 @@ class _PropertyDashboard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    void editProperty() => _push(
-          context,
-          PropertyFormScreen(landlordId: property.landlordId, existing: property),
-        );
+    void editProperty() => _push(context, PropertyFormScreen(landlordId: property.landlordId, existing: property));
 
     return StreamBuilder<List<Room>>(
       stream: RoomService().watchForProperty(property.id),
       builder: (context, snap) {
         final rooms = snap.data ?? const <Room>[];
         final available = rooms.where((r) => r.available).length;
+        final houseRooms = roomsByHouse(rooms)[property.id];
 
         return ListView(
           padding: const EdgeInsets.fromLTRB(20, 24, 20, 120),
@@ -85,21 +85,20 @@ class _PropertyDashboard extends StatelessWidget {
             const SizedBox(height: 20),
             Row(
               children: [
-                _StatTile(number: available, label: 'Available'),
+                _StatTile(number: available, label: 'Open'),
                 const SizedBox(width: 10),
                 _StatTile(number: rooms.length - available, label: 'Taken'),
                 const SizedBox(width: 10),
-                _StatTile(number: rooms.length, label: 'Rooms'),
+                // Only the number: who saved stays private.
+                _StatTile(number: property.saveCount, label: property.saveCount == 1 ? 'Save' : 'Saves'),
               ],
             ),
             const SizedBox(height: 20),
             SectionHeader(
               title: 'Rooms',
               actionLabel: '+ Add room',
-              onAction: () => _push(
-                context,
-                RoomFormScreen(property: property, suggestedName: 'Room ${rooms.length + 1}'),
-              ),
+              onAction: () =>
+                  _push(context, RoomFormScreen(property: property, suggestedName: 'Room ${rooms.length + 1}')),
             ),
             const SizedBox(height: 4),
             if (snap.hasError)
@@ -126,10 +125,7 @@ class _PropertyDashboard extends StatelessWidget {
                       if (i > 0) Container(height: 0.5, color: AppColors.divider),
                       RoomRow(
                         room: rooms[i],
-                        onTap: () => _push(
-                          context,
-                          RoomFormScreen(property: property, existing: rooms[i]),
-                        ),
+                        onTap: () => _push(context, RoomFormScreen(property: property, existing: rooms[i])),
                       ),
                     ],
                   ],
@@ -140,11 +136,13 @@ class _PropertyDashboard extends StatelessWidget {
             const SizedBox(height: 12),
             ListingCard(
               name: property.name,
-              subtitle: property.tags.isEmpty ? 'Puerto Princesa' : property.tags.take(3).join(' · '),
-              priceText: formatPriceRange(property.priceMin, property.priceMax),
+              subtitle: 'New · ${property.area.isEmpty ? 'Puerto Princesa' : property.area}',
+              fromPrice: '₱${formatPesos(houseRooms?.cheapestOpen ?? property.priceMin)}',
               photoUrl: property.photos.isEmpty ? null : property.photos.first,
-              roomsAvailable: snap.hasData && rooms.isNotEmpty ? available : null,
-              onTap: editProperty,
+              openRooms: houseRooms?.open ?? 0,
+              totalRooms: houseRooms?.total ?? 0,
+              checkedAt: lastChecked(property, houseRooms),
+              onTap: () => _push(context, ListingScreen(property: property)),
             ),
             const SizedBox(height: 12),
             PrimaryButton(
@@ -202,7 +200,10 @@ class _StatTile extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('$number', style: GoogleFonts.inter(fontSize: 24, fontWeight: FontWeight.w800, color: AppColors.ink)),
+            Text(
+              '$number',
+              style: GoogleFonts.inter(fontSize: 24, fontWeight: FontWeight.w800, color: AppColors.ink),
+            ),
             const SizedBox(height: 2),
             Text(label, style: AppText.secondary.copyWith(fontSize: 13)),
           ],

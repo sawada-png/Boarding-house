@@ -25,7 +25,10 @@ class PricePin extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 12),
         alignment: Alignment.center,
         decoration: BoxDecoration(color: AppColors.segmentFill, borderRadius: BorderRadius.circular(15)),
-        child: Text('Full', style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.takenText)),
+        child: Text(
+          'Full',
+          style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.takenText),
+        ),
       );
     } else {
       final h = selected ? 40.0 : 34.0;

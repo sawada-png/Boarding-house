@@ -9,18 +9,17 @@ void main() {
 
   Future<bool?> ask(WidgetTester tester, String tap) async {
     bool? answer;
-    await tester.pumpWidget(CupertinoApp(
-      home: Builder(
-        builder: (context) => CupertinoButton(
-          child: const Text('open'),
-          onPressed: () async => answer = await showConfirmDelete(
-            context,
-            title: 'Delete Room 1?',
-            message: "This can't be undone.",
+    await tester.pumpWidget(
+      CupertinoApp(
+        home: Builder(
+          builder: (context) => CupertinoButton(
+            child: const Text('open'),
+            onPressed: () async =>
+                answer = await showConfirmDelete(context, title: 'Delete Room 1?', message: "This can't be undone."),
           ),
         ),
       ),
-    ));
+    );
     await tester.tap(find.text('open'));
     await tester.pumpAndSettle();
     await tester.tap(find.text(tap));

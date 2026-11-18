@@ -26,7 +26,9 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
     return CupertinoPageScaffold(
       child: Stack(
         children: [
-          Positioned.fill(child: PinMap(pin: _pin, onTap: (p) => setState(() => _pin = p))),
+          Positioned.fill(
+            child: PinMap(pin: _pin, onTap: (p) => setState(() => _pin = p)),
+          ),
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.all(16),
@@ -43,14 +45,10 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
                           decoration: BoxDecoration(
                             color: AppColors.card,
                             borderRadius: BorderRadius.circular(14),
-                            boxShadow: const [
-                              BoxShadow(color: Color(0x14000000), blurRadius: 8, offset: Offset(0, 2)),
-                            ],
+                            boxShadow: const [BoxShadow(color: Color(0x14000000), blurRadius: 8, offset: Offset(0, 2))],
                           ),
                           child: Text(
-                            _pin == null
-                                ? 'Tap the map where your boarding house is'
-                                : 'Tap again to move the pin',
+                            _pin == null ? 'Tap the map where your boarding house is' : 'Tap again to move the pin',
                             style: AppText.label,
                           ),
                         ),

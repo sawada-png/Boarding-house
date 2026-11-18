@@ -5,11 +5,7 @@ import '../../theme/app_text_styles.dart';
 import '../../widgets/primary_button.dart';
 
 /// Shows a BoardMate-style popup card with an error message and a "Got it" button.
-Future<void> showError(
-  BuildContext context,
-  String message, {
-  String title = "Something's not right",
-}) {
+Future<void> showError(BuildContext context, String message, {String title = "Something's not right"}) {
   return _showCard<void>(
     context,
     icon: CupertinoIcons.exclamationmark,
@@ -73,9 +69,7 @@ Future<T?> _showCard<T>(
           decoration: BoxDecoration(
             color: AppColors.card,
             borderRadius: BorderRadius.circular(28),
-            boxShadow: const [
-              BoxShadow(color: Color(0x290F1D20), blurRadius: 40, offset: Offset(0, 16)),
-            ],
+            boxShadow: const [BoxShadow(color: Color(0x290F1D20), blurRadius: 40, offset: Offset(0, 16))],
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -89,11 +83,7 @@ Future<T?> _showCard<T>(
               const SizedBox(height: 16),
               Text(title, textAlign: TextAlign.center, style: AppText.cardTitle.copyWith(fontSize: 22)),
               const SizedBox(height: 8),
-              Text(
-                message,
-                textAlign: TextAlign.center,
-                style: AppText.secondary.copyWith(fontSize: 15, height: 1.4),
-              ),
+              Text(message, textAlign: TextAlign.center, style: AppText.secondary.copyWith(fontSize: 15, height: 1.4)),
               const SizedBox(height: 24),
               ...buttons((value) => Navigator.pop(context, value)),
             ],
@@ -115,4 +105,33 @@ Future<void> showInfo(BuildContext context, {required String title, required Str
     message: message,
     buttons: (close) => [PrimaryButton(label: 'Got it', onPressed: () => close(null))],
   );
+}
+
+/// Small dark pill near the bottom that disappears by itself, like "Copied!".
+void showToast(BuildContext context, String message) {
+  final overlay = Overlay.of(context, rootOverlay: true);
+  late final OverlayEntry entry;
+  entry = OverlayEntry(
+    builder: (_) => Positioned(
+      left: 0,
+      right: 0,
+      bottom: 120,
+      child: IgnorePointer(
+        child: Center(
+          child: TweenAnimationBuilder<double>(
+            tween: Tween(begin: 0, end: 1),
+            duration: const Duration(milliseconds: 180),
+            builder: (context, t, child) => Opacity(opacity: t, child: child),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+              decoration: BoxDecoration(color: AppColors.ink, borderRadius: BorderRadius.circular(22)),
+              child: Text(message, style: AppText.label.copyWith(color: AppColors.card)),
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
+  overlay.insert(entry);
+  Future.delayed(const Duration(milliseconds: 1600), entry.remove);
 }

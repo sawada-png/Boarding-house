@@ -14,6 +14,7 @@ class PrimaryButton extends StatelessWidget {
     this.secondary = false,
     this.icon,
     this.color = AppColors.ink,
+    this.expand = true,
   });
 
   final String label;
@@ -25,18 +26,25 @@ class PrimaryButton extends StatelessWidget {
   /// Fill of the main button: ink, lagoon for "Ask about Room 2", red for delete.
   final Color color;
 
+  /// False to fit the text (bottom bars) instead of filling the width.
+  final bool expand;
+
   @override
   Widget build(BuildContext context) {
     final textColor = secondary ? AppColors.ink : AppColors.card;
     final shape = BorderRadius.circular(28);
     return Container(
       height: 54,
-      width: double.infinity,
+      width: expand ? double.infinity : null,
       decoration: secondary
-          ? BoxDecoration(color: AppColors.card, borderRadius: shape, border: Border.all(color: AppColors.border))
+          ? BoxDecoration(
+              color: AppColors.card,
+              borderRadius: shape,
+              border: Border.all(color: AppColors.border),
+            )
           : null,
       child: CupertinoButton(
-        padding: EdgeInsets.zero,
+        padding: expand ? EdgeInsets.zero : const EdgeInsets.symmetric(horizontal: 22),
         color: secondary ? null : color,
         disabledColor: secondary ? const Color(0x00000000) : color.withValues(alpha: 0.5),
         borderRadius: shape,
@@ -44,13 +52,14 @@ class PrimaryButton extends StatelessWidget {
         child: loading
             ? CupertinoActivityIndicator(color: secondary ? AppColors.textSecondary : AppColors.card)
             : Row(
+                mainAxisSize: expand ? MainAxisSize.max : MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  if (icon != null) ...[
-                    Icon(icon, size: 19, color: textColor),
-                    const SizedBox(width: 8),
-                  ],
-                  Text(label, style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w600, color: textColor)),
+                  if (icon != null) ...[Icon(icon, size: 19, color: textColor), const SizedBox(width: 8)],
+                  Text(
+                    label,
+                    style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w600, color: textColor),
+                  ),
                 ],
               ),
       ),

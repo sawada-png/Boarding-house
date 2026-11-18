@@ -20,10 +20,7 @@ class SegmentedPills extends StatelessWidget {
       decoration: BoxDecoration(color: AppColors.segmentFill, borderRadius: BorderRadius.circular(16)),
       child: Row(
         children: [
-          for (var i = 0; i < labels.length; i++) ...[
-            if (i > 0) const SizedBox(width: 4),
-            Expanded(child: _option(i)),
-          ],
+          for (var i = 0; i < labels.length; i++) ...[if (i > 0) const SizedBox(width: 4), Expanded(child: _option(i))],
         ],
       ),
     );

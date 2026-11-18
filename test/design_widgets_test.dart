@@ -9,25 +9,37 @@ import 'package:boardmate/widgets/room_map.dart';
 void main() {
   setUpAll(() => GoogleFonts.config.allowRuntimeFetching = false);
 
-  Widget wrap(Widget child) => CupertinoApp(home: Center(child: SizedBox(width: 600, child: child)));
+  Widget wrap(Widget child) => CupertinoApp(
+    home: Center(child: SizedBox(width: 600, child: child)),
+  );
 
   testWidgets('RoomMap: floors in order, open rooms tappable, taken and shared are not', (tester) async {
     final tapped = <String>[];
-    await tester.pumpWidget(wrap(RoomMap(
-      floors: const [
-        RoomMapFloor(label: '2F', tiles: [
-          RoomMapTile(id: 'r3', label: 'Room 3'),
-          RoomMapTile(id: 'r4', label: 'Room 4', open: true, price: '₱3,500', detail: 'bedspace · 2'),
-        ]),
-        RoomMapFloor(label: 'GF', tiles: [
-          RoomMapTile(id: 'r2', label: 'Room 2', open: true, price: '₱4,500'),
-          RoomMapTile.shared(id: 's', detail: 'Kitchen · CR'),
-        ]),
-      ],
-      selectedId: 'r2',
-      onTap: (t) => tapped.add(t.id),
-      hint: 'Tap an open room',
-    )));
+    await tester.pumpWidget(
+      wrap(
+        RoomMap(
+          floors: const [
+            RoomMapFloor(
+              label: '2F',
+              tiles: [
+                RoomMapTile(id: 'r3', label: 'Room 3'),
+                RoomMapTile(id: 'r4', label: 'Room 4', open: true, price: '₱3,500', detail: 'bedspace · 2'),
+              ],
+            ),
+            RoomMapFloor(
+              label: 'GF',
+              tiles: [
+                RoomMapTile(id: 'r2', label: 'Room 2', open: true, price: '₱4,500'),
+                RoomMapTile.shared(id: 's', detail: 'Kitchen · CR'),
+              ],
+            ),
+          ],
+          selectedId: 'r2',
+          onTap: (t) => tapped.add(t.id),
+          hint: 'Tap an open room',
+        ),
+      ),
+    );
 
     expect(find.text('Room Map'), findsOneWidget);
     expect(find.text('Open'), findsOneWidget); // legend
@@ -41,9 +53,18 @@ void main() {
   });
 
   testWidgets('RoomMap wraps a floor with more than 3 rooms onto a second row', (tester) async {
-    await tester.pumpWidget(wrap(RoomMap(floors: [
-      RoomMapFloor(label: 'GF', tiles: [for (var i = 1; i <= 4; i++) RoomMapTile(id: '$i', label: 'Room $i')]),
-    ])));
+    await tester.pumpWidget(
+      wrap(
+        RoomMap(
+          floors: [
+            RoomMapFloor(
+              label: 'GF',
+              tiles: [for (var i = 1; i <= 4; i++) RoomMapTile(id: '$i', label: 'Room $i')],
+            ),
+          ],
+        ),
+      ),
+    );
     expect(find.text('GF'), findsOneWidget);
     expect(tester.getTopLeft(find.text('Room 4')).dy, greaterThan(tester.getTopLeft(find.text('Room 1')).dy));
   });

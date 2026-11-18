@@ -61,8 +61,7 @@ class _Loading extends StatelessWidget {
           children: [
             if (!showLogout) const CupertinoActivityIndicator(),
             if (message != null) Text(message!, textAlign: TextAlign.center),
-            if (showLogout)
-              CupertinoButton(onPressed: AuthService().signOut, child: const Text('Log out')),
+            if (showLogout) CupertinoButton(onPressed: AuthService().signOut, child: const Text('Log out')),
           ],
         ),
       ),

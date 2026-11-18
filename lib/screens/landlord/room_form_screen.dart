@@ -14,17 +14,13 @@ import '../../widgets/labeled_field.dart';
 import '../../widgets/photo_picker_grid.dart';
 import '../../widgets/primary_button.dart';
 import '../../widgets/rounded_card.dart';
+import '../../widgets/segmented_pills.dart';
 import '../../widgets/tag_chip.dart';
 import '../shared/dialogs.dart';
 
 /// Add a room to a boarding house, or edit one when [existing] is given.
 class RoomFormScreen extends StatefulWidget {
-  const RoomFormScreen({
-    super.key,
-    required this.property,
-    this.existing,
-    this.suggestedName = 'Room 1',
-  });
+  const RoomFormScreen({super.key, required this.property, this.existing, this.suggestedName = 'Room 1'});
 
   final Property property;
   final Room? existing;
@@ -42,6 +38,7 @@ class _RoomFormScreenState extends State<RoomFormScreen> {
   late final _price = TextEditingController(text: _old == null ? '' : '${_old.monthlyPrice}');
 
   late RoomType _type = _old?.type ?? RoomType.bedspace;
+  late RoomFloor _floor = _old?.floor ?? RoomFloor.ground;
   late int _capacity = _old == null || _old.capacity < 2 ? 2 : _old.capacity;
   late bool _privateCr = _old?.privateCr ?? false;
   late bool _available = _old?.available ?? true;
@@ -76,8 +73,10 @@ class _RoomFormScreenState extends State<RoomFormScreen> {
           available: _available,
           included: _included,
           photos: _old?.photos ?? const [],
+          floor: _floor,
         ),
         _photos,
+        wasOpen: _old?.available ?? false,
       );
       if (mounted) Navigator.pop(context);
     } catch (_) {
@@ -123,6 +122,14 @@ class _RoomFormScreenState extends State<RoomFormScreen> {
             const SizedBox(height: 24),
 
             LabeledField(label: 'Room name', controller: _name, placeholder: 'Room 1'),
+            const SizedBox(height: 24),
+
+            const FormSectionLabel('Which floor?', hint: 'Puts the room in the right row of your Room Map.'),
+            SegmentedPills(
+              labels: [for (final f in RoomFloor.values) f.label],
+              selected: _floor.index,
+              onChanged: (i) => setState(() => _floor = RoomFloor.values[i]),
+            ),
             const SizedBox(height: 24),
 
             const FormSectionLabel('Type of room'),

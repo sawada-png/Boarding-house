@@ -10,9 +10,7 @@ class CostLine {
   const CostLine(this.label, this.amount, {this.estimate = false});
 
   /// Shown as "included" in green; adds nothing to the total.
-  const CostLine.included(this.label)
-      : amount = null,
-        estimate = false;
+  const CostLine.included(this.label) : amount = null, estimate = false;
 
   final String label;
 
@@ -50,7 +48,9 @@ class CostCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.baseline,
             textBaseline: TextBaseline.alphabetic,
             children: [
-              Expanded(child: Text(title, style: AppText.section.copyWith(fontSize: 17, color: AppColors.card))),
+              Expanded(
+                child: Text(title, style: AppText.section.copyWith(fontSize: 17, color: AppColors.card)),
+              ),
               Text('estimate by owner', style: muted),
             ],
           ),
@@ -62,9 +62,7 @@ class CostCard extends StatelessWidget {
                 children: [
                   Expanded(child: Text(line.label, style: lineStyle)),
                   Text(
-                    line.amount == null
-                        ? 'included'
-                        : '${line.estimate ? '~' : ''}₱${formatPesos(line.amount!)}',
+                    line.amount == null ? 'included' : '${line.estimate ? '~' : ''}₱${formatPesos(line.amount!)}',
                     style: line.amount == null ? lineStyle.copyWith(color: AppColors.onInkGood) : lineStyle,
                   ),
                 ],
@@ -73,32 +71,39 @@ class CostCard extends StatelessWidget {
           Container(
             margin: const EdgeInsets.only(top: 3),
             padding: const EdgeInsets.only(top: 10),
-            decoration: const BoxDecoration(border: Border(top: BorderSide(color: Color(0xFF2C3A3D)))),
+            decoration: const BoxDecoration(
+              border: Border(top: BorderSide(color: Color(0xFF2C3A3D))),
+            ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.baseline,
               textBaseline: TextBaseline.alphabetic,
               children: [
                 Expanded(
-                  child: Text('About',
-                      style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.card)),
+                  child: Text(
+                    'About',
+                    style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.card),
+                  ),
                 ),
-                Text.rich(TextSpan(
-                  text: '₱${formatPesos(totalOf(lines))}',
-                  style: AppText.title.copyWith(color: AppColors.card),
-                  children: [
-                    TextSpan(
-                      text: ' /mo',
-                      style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w500, color: AppColors.onInkMuted),
-                    ),
-                  ],
-                )),
+                Text.rich(
+                  TextSpan(
+                    text: '₱${formatPesos(totalOf(lines))}',
+                    style: AppText.title.copyWith(color: AppColors.card),
+                    children: [
+                      TextSpan(
+                        text: ' /mo',
+                        style: GoogleFonts.inter(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.onInkMuted,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),
-          if (moveIn != null) ...[
-            const SizedBox(height: 10),
-            Text('Move-in: $moveIn', style: muted),
-          ],
+          if (moveIn != null) ...[const SizedBox(height: 10), Text('Move-in: $moveIn', style: muted)],
         ],
       ),
     );

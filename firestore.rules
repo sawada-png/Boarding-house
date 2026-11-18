@@ -12,6 +12,11 @@ service cloud.firestore {
       return signedIn() && request.auth.uid == uid;
     }
 
+    // The logged-in user's "saved" document for a boarding house.
+    function savedDoc(propertyId) {
+      return /databases/$(database)/documents/saved/$(request.auth.uid + "_" + propertyId);
+    }
+
     // One document per user. Only you can see and change your own.
     match /users/{uid} {
       allow read: if isMe(uid);
@@ -26,12 +31,23 @@ service cloud.firestore {
     }
 
     // Boarding houses. Any logged-in user can view; only the owner can change.
+    // Students can only move saveCount by 1, in the same write that saves or unsaves the house.
     match /properties/{propertyId} {
       allow read: if signedIn();
-      allow create: if signedIn() && request.resource.data.landlordId == request.auth.uid;
+      allow create: if signedIn() && request.resource.data.landlordId == request.auth.uid
+        && request.resource.data.get("saveCount", 0) == 0;
       allow update: if signedIn()
         && resource.data.landlordId == request.auth.uid
-        && request.resource.data.landlordId == request.auth.uid;
+        && request.resource.data.landlordId == request.auth.uid
+        && request.resource.data.get("saveCount", 0) == resource.data.get("saveCount", 0);
+      allow update: if signedIn()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["saveCount"])
+        && (
+          (request.resource.data.saveCount == resource.data.get("saveCount", 0) + 1
+            && !exists(savedDoc(propertyId)) && existsAfter(savedDoc(propertyId)))
+          || (request.resource.data.saveCount == resource.data.get("saveCount", 0) - 1
+            && exists(savedDoc(propertyId)) && !existsAfter(savedDoc(propertyId)))
+        );
       allow delete: if signedIn() && resource.data.landlordId == request.auth.uid;
     }
 
@@ -52,6 +68,16 @@ service cloud.firestore {
         && request.resource.data.landlordId == request.auth.uid
         && ownsProperty(request.resource.data.propertyId);
       allow delete: if signedIn() && resource.data.landlordId == request.auth.uid;
+    }
+
+    // Saved (hearted) boarding houses: saved/{userId}_{propertyId}. Only you can see or change yours.
+    match /saved/{savedId} {
+      allow read, delete: if signedIn() && resource.data.userId == request.auth.uid;
+      allow create: if signedIn()
+        && request.resource.data.userId == request.auth.uid
+        && savedId == request.auth.uid + "_" + request.resource.data.propertyId
+        && request.resource.data.keys().hasOnly(["userId", "propertyId", "savedAt"]);
+      allow update: if false;
     }
   }
 }

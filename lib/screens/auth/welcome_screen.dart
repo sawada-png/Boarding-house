@@ -47,10 +47,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               Container(
                 width: 64,
                 height: 64,
-                decoration: BoxDecoration(
-                  color: AppColors.lagoon,
-                  borderRadius: BorderRadius.circular(18),
-                ),
+                decoration: BoxDecoration(color: AppColors.lagoon, borderRadius: BorderRadius.circular(18)),
                 child: const Icon(CupertinoIcons.house_fill, color: AppColors.card, size: 32),
               ),
               const SizedBox(height: 20),
@@ -66,10 +63,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 icon: CupertinoIcons.phone,
                 onPressed: _busy != null
                     ? null
-                    : () => Navigator.push(
-                          context,
-                          CupertinoPageRoute(builder: (_) => const PhoneScreen()),
-                        ),
+                    : () => Navigator.push(context, CupertinoPageRoute(builder: (_) => const PhoneScreen())),
               ),
               const SizedBox(height: 12),
               PrimaryButton(
@@ -83,8 +77,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 label: 'Continue with Facebook',
                 secondary: true,
                 loading: _busy == 'facebook',
-                onPressed:
-                    _busy != null ? null : () => _run('facebook', _auth.signInWithFacebook),
+                onPressed: _busy != null ? null : () => _run('facebook', _auth.signInWithFacebook),
               ),
             ],
           ),

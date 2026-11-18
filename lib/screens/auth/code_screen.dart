@@ -74,10 +74,7 @@ class _CodeScreenState extends State<CodeScreen> {
                 textAlign: TextAlign.center,
                 style: AppText.body.copyWith(fontSize: 28, letterSpacing: 8),
                 padding: const EdgeInsets.all(14),
-                decoration: BoxDecoration(
-                  color: AppColors.card,
-                  borderRadius: BorderRadius.circular(12),
-                ),
+                decoration: BoxDecoration(color: AppColors.card, borderRadius: BorderRadius.circular(12)),
                 onSubmitted: (_) => _check(),
               ),
               const Spacer(),

@@ -27,6 +27,9 @@ class Property {
     this.description = '',
     this.photos = const [],
     this.tags = const [],
+    this.area = '',
+    this.saveCount = 0,
+    this.updatedAt,
   });
 
   /// Empty until it's saved the first time.
@@ -45,6 +48,18 @@ class Property {
   final int priceMax;
   final List<String> tags;
 
+  /// Barangay, like "Mandaragat". Empty if the landlord didn't say.
+  final String area;
+
+  /// How many students saved this house. Who saved it stays private.
+  final int saveCount;
+
+  /// When the landlord last saved the house. Null until the server sets it.
+  final DateTime? updatedAt;
+
+  /// "Mandaragat · Puerto Princesa", or just "Puerto Princesa".
+  String get place => area.isEmpty ? 'Puerto Princesa' : '$area · Puerto Princesa';
+
   factory Property.fromDoc(DocumentSnapshot<Map<String, dynamic>> doc) {
     final d = doc.data()!;
     final location = d['location'] as GeoPoint?;
@@ -59,19 +74,23 @@ class Property {
       priceMin: (d['priceMin'] as num?)?.toInt() ?? 0,
       priceMax: (d['priceMax'] as num?)?.toInt() ?? 0,
       tags: List<String>.from(d['tags'] as List? ?? const []),
+      area: d['area'] as String? ?? '',
+      saveCount: (d['saveCount'] as num?)?.toInt() ?? 0,
+      updatedAt: (d['updatedAt'] as Timestamp?)?.toDate(),
     );
   }
 
   Map<String, dynamic> toMap() => {
-        'landlordId': landlordId,
-        'name': name,
-        'description': description,
-        'location': GeoPoint(latitude, longitude),
-        'photos': photos,
-        'priceMin': priceMin,
-        'priceMax': priceMax,
-        'tags': tags,
-      };
+    'landlordId': landlordId,
+    'name': name,
+    'description': description,
+    'location': GeoPoint(latitude, longitude),
+    'photos': photos,
+    'priceMin': priceMin,
+    'priceMax': priceMax,
+    'tags': tags,
+    'area': area,
+  };
 }
 
 /// "₱3,000–4,500" (or "₱3,500" when both are the same).

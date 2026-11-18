@@ -9,17 +9,16 @@ void main() {
     int capacity = 2,
     bool privateCr = true,
     List<String> included = const ['Study table', 'Electric fan'],
-  }) =>
-      Room(
-        propertyId: 'p1',
-        landlordId: 'u1',
-        name: 'Room 1',
-        type: type,
-        capacity: capacity,
-        monthlyPrice: 3500,
-        privateCr: privateCr,
-        included: included,
-      );
+  }) => Room(
+    propertyId: 'p1',
+    landlordId: 'u1',
+    name: 'Room 1',
+    type: type,
+    capacity: capacity,
+    monthlyPrice: 3500,
+    privateCr: privateCr,
+    included: included,
+  );
 
   test('Room summary reads like the mockup', () {
     expect(room().summary, 'Bedspace for 2 · own CR · study table, electric fan');

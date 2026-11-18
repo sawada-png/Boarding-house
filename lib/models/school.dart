@@ -63,3 +63,16 @@ String formatDistance(double meters) {
   if (rounded < 1000) return '$rounded m';
   return '${(meters / 1000).toStringAsFixed(1)} km';
 }
+
+/// Walking speed used for "6 min walk to PSU".
+const walkMetersPerMinute = 80.0;
+
+// shortcut: straight-line distance, so real walks are a bit longer; use a routing service later.
+int walkMinutes(double meters) => (meters / walkMetersPerMinute).ceil().clamp(1, 999);
+
+/// "6 min walk to PSU", or "2.5 km from PSU" when it's too far to walk.
+String walkText(double meters, School school) {
+  final minutes = walkMinutes(meters);
+  if (minutes > 45) return '${formatDistance(meters)} from ${school.code}';
+  return '$minutes min walk to ${school.code}';
+}

@@ -48,10 +48,7 @@ class _ChipPickerState extends State<ChipPicker> {
 
   @override
   Widget build(BuildContext context) {
-    final choices = [
-      ...widget.options,
-      ...widget.selected.where((s) => !widget.options.contains(s)),
-    ];
+    final choices = [...widget.options, ...widget.selected.where((s) => !widget.options.contains(s))];
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -60,11 +57,7 @@ class _ChipPickerState extends State<ChipPicker> {
           runSpacing: 8,
           children: [
             for (final item in choices)
-              TagChip(
-                label: item,
-                selected: widget.selected.contains(item),
-                onTap: () => _toggle(item),
-              ),
+              TagChip(label: item, selected: widget.selected.contains(item), onTap: () => _toggle(item)),
           ],
         ),
         const SizedBox(height: 12),
@@ -76,10 +69,7 @@ class _ChipPickerState extends State<ChipPicker> {
                 placeholder: widget.customPlaceholder,
                 style: AppText.body,
                 padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: AppColors.card,
-                  borderRadius: BorderRadius.circular(12),
-                ),
+                decoration: BoxDecoration(color: AppColors.card, borderRadius: BorderRadius.circular(12)),
                 onSubmitted: (_) => _addCustom(),
               ),
             ),

@@ -1,111 +1,148 @@
 import 'package:cupertino_ui/cupertino_ui.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../theme/app_colors.dart';
 import '../theme/app_text_styles.dart';
+import 'dashed_line.dart';
+import 'freshness_badge.dart';
+import 'heart_button.dart';
 import 'photo_box.dart';
-import 'rounded_card.dart';
-import 'status_badge.dart';
+import 'room_dots.dart';
+import 'walk_pill.dart';
 
-/// Boarding house card on the home list: photo, name, rating, distance, price.
+/// Boarding house card on Home and Saved (design-2.0/2b): inset cover photo with a walk pill,
+/// name, "New · Mandaragat", "from ₱3,000", then room dots and when rooms were checked.
 class ListingCard extends StatelessWidget {
   const ListingCard({
     super.key,
     required this.name,
     required this.subtitle,
-    required this.priceText,
-    this.roomsAvailable,
+    required this.fromPrice,
     this.photoUrl,
-    this.rating,
-    this.reviewCount = 0,
+    this.walkText,
+    this.openRooms = 0,
+    this.totalRooms = 0,
+    this.checkedAt,
+    this.saved,
+    this.onSave,
     this.onTap,
   });
 
   final String name;
 
-  /// For example "450 m from PSU · Tiniguiban".
+  /// "New · Mandaragat"
   final String subtitle;
 
-  /// For example "₱3,000–4,500".
-  final String priceText;
-  /// Null hides the rooms badge (for example before any rooms are added).
-  final int? roomsAvailable;
+  /// "₱3,000"
+  final String fromPrice;
   final String? photoUrl;
 
-  /// Null when the place has no reviews yet.
-  final double? rating;
-  final int reviewCount;
+  /// "6 min walk to PSU". Null hides the pill.
+  final String? walkText;
+  final int openRooms;
+  final int totalRooms;
+  final DateTime? checkedAt;
+
+  /// Null hides the heart (landlord preview).
+  final bool? saved;
+  final VoidCallback? onSave;
   final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: RoundedCard(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            PhotoBox(imageUrl: photoUrl, hint: 'Photo · front of the house', height: 170),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(name, style: AppText.cardTitle, overflow: TextOverflow.ellipsis),
+    final full = totalRooms > 0 && openRooms == 0;
+    return Semantics(
+      container: true,
+      button: onTap != null,
+      label: name,
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: AppColors.card,
+            borderRadius: BorderRadius.circular(28),
+            boxShadow: const [
+              BoxShadow(color: Color(0x0A0F1D20), blurRadius: 2, offset: Offset(0, 1)),
+              BoxShadow(color: Color(0x140F1D20), blurRadius: 32, offset: Offset(0, 12)),
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              SizedBox(
+                height: 188,
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    PhotoBox(imageUrl: photoUrl, hint: 'Cover photo', radius: 22),
+                    if (walkText != null) Positioned(top: 12, left: 12, child: WalkPill(text: walkText!)),
+                    if (saved != null)
+                      Positioned(
+                        top: 8,
+                        right: 8,
+                        child: HeartButton(saved: saved!, onTap: onSave ?? () {}, size: 40),
                       ),
-                      if (rating != null) _Rating(rating: rating!, count: reviewCount),
-                    ],
-                  ),
-                  const SizedBox(height: 6),
-                  Text(subtitle, style: AppText.secondary),
-                  const SizedBox(height: 10),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text.rich(
-                          TextSpan(
-                            text: priceText,
-                            style: GoogleFonts.inter(
-                                fontSize: 16, fontWeight: FontWeight.w700, color: AppColors.ink),
-                            children: [TextSpan(text: ' / month', style: AppText.secondary)],
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(10, 14, 10, 8),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(name, style: AppText.cardTitle, maxLines: 2, overflow: TextOverflow.ellipsis),
+                              const SizedBox(height: 3),
+                              Text(subtitle, style: AppText.secondary.copyWith(fontSize: 13)),
+                            ],
                           ),
                         ),
-                      ),
-                      if (roomsAvailable case final n?)
-                        StatusBadge(
-                          label: n == 0 ? 'Full' : '$n room${n == 1 ? '' : 's'} available',
-                          muted: n == 0,
+                        const SizedBox(width: 12),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text('from', style: AppText.secondary.copyWith(fontSize: 12)),
+                            Text(fromPrice, style: AppText.price),
+                          ],
                         ),
-                    ],
-                  ),
-                ],
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    const DashedLine(),
+                    const SizedBox(height: 10),
+                    Row(
+                      children: [
+                        if (totalRooms == 0)
+                          Expanded(child: Text('No rooms listed yet', style: AppText.secondary.copyWith(fontSize: 13)))
+                        else ...[
+                          RoomDots(open: openRooms, total: totalRooms, showLabel: false),
+                          const SizedBox(width: 2),
+                          Expanded(
+                            child: Text(
+                              full ? 'Full' : '$openRooms of $totalRooms open',
+                              style: AppText.label.copyWith(
+                                fontSize: 13,
+                                color: full ? AppColors.textSecondary : AppColors.ink,
+                              ),
+                            ),
+                          ),
+                        ],
+                        FreshnessBadge(checkedAt: checkedAt, prefix: ''),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
-    );
-  }
-}
-
-class _Rating extends StatelessWidget {
-  const _Rating({required this.rating, required this.count});
-
-  final double rating;
-  final int count;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        const Icon(CupertinoIcons.star_fill, size: 14, color: AppColors.star),
-        const SizedBox(width: 4),
-        Text(rating.toStringAsFixed(1), style: AppText.label),
-        Text(' ($count)', style: AppText.secondary),
-      ],
     );
   }
 }

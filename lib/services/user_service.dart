@@ -8,9 +8,8 @@ class UserService {
   final _users = FirebaseFirestore.instance.collection('users');
 
   /// The user's profile, or null if they haven't picked a role yet.
-  Stream<AppUser?> watch(String uid) => _users.doc(uid).snapshots().map(
-        (doc) => doc.exists ? AppUser.fromMap(uid, doc.data()!) : null,
-      );
+  Stream<AppUser?> watch(String uid) =>
+      _users.doc(uid).snapshots().map((doc) => doc.exists ? AppUser.fromMap(uid, doc.data()!) : null);
 
   /// First-time setup after login: saves name and role.
   Future<void> create(User user, {required String name, required UserRole role}) {
@@ -22,19 +21,14 @@ class UserService {
       email: user.email,
       loginType: loginTypeOf(user),
     );
-    return _users.doc(user.uid).set({
-      ...profile.toMap(),
-      'createdAt': FieldValue.serverTimestamp(),
-    });
+    return _users.doc(user.uid).set({...profile.toMap(), 'createdAt': FieldValue.serverTimestamp()});
   }
 
   /// Saves the student's school (a School id like 'psu'), or clears it with null.
-  Future<void> setSchool(String uid, String? schoolId) =>
-      _users.doc(uid).update({'school': schoolId});
+  Future<void> setSchool(String uid, String? schoolId) => _users.doc(uid).update({'school': schoolId});
 
   /// Switch between student mode and landlord mode.
-  Future<void> setRole(String uid, UserRole role) =>
-      _users.doc(uid).update({'role': role.name});
+  Future<void> setRole(String uid, UserRole role) => _users.doc(uid).update({'role': role.name});
 }
 
 /// 'google', 'facebook' or 'phone', from how the user logged in.

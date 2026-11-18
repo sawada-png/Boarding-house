@@ -31,9 +31,10 @@ class AuthService {
       },
       codeSent: (verificationId, _) {
         if (completer.isCompleted) return;
-        completer.complete((code) => _auth.signInWithCredential(
-              PhoneAuthProvider.credential(verificationId: verificationId, smsCode: code),
-            ));
+        completer.complete(
+          (code) =>
+              _auth.signInWithCredential(PhoneAuthProvider.credential(verificationId: verificationId, smsCode: code)),
+        );
       },
       codeAutoRetrievalTimeout: (_) {},
     );
