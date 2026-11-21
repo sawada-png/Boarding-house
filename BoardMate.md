@@ -194,7 +194,17 @@ Code: https://github.com/sawada-png/Boarding-house
 - [x] Saved (heart) + Share
 - [x] Landlord: Room Map with one-tap open/taken, room bills + move-in terms, save count
 
-**Week 3: next** — chat + call button, move in/out, reviews (verified stays only), landlord ID verification (manual: PhilID QR + selfie + business permit, admin turns on the badge)
+**Week 3: built (Nov 21, 2026)**, not yet tested with two real accounts
+- [x] Chat with the landlord from the house page; Messages tab for students and landlords; Call button
+- [x] Plan a visit: visit card with up to 3 times, the other person confirms one; Directions
+- [x] Tenants tab: landlord adds a tenant, student confirms "I moved in", room switches to taken; Moved out reopens it
+- [x] Reviews only from confirmed stays; stars on the house page
+- [x] Get verified card (manual check: PhilID QR + selfie + business permit; staff turn on the badge in Firebase)
+- [x] Weekly check on the dashboard: "Is Room 4 still open?"
+- [ ] Pick the email landlords send their ID to (lib/config.dart → verifyEmail)
+- [ ] Test chat, visits, move-in and reviews with a student + landlord account
+
+**Week 4: next** — fix bugs, test with 2–3 real landlords, publish to Play Store
 
 **How to run the app**
 1. Open the `Boarding-house` folder in Cursor, open a terminal
