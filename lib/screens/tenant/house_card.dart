@@ -40,9 +40,8 @@ class HouseCard extends StatelessWidget {
     final s = school;
     return ListingCard(
       name: p.name,
-      // shortcut: reviews come in Week 3, so every house is "New" for now.
+      // shortcut: cards skip the star rating (it's on the house page); add a reviews stream to Home to show it here.
       subtitle: [
-        'New',
         if (p.area.isNotEmpty) p.area else 'Puerto Princesa',
         if (landlord?.verified ?? false) 'Verified owner',
       ].join(' · '),

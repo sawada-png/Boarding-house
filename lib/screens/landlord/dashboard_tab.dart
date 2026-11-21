@@ -60,6 +60,21 @@ class DashboardTab extends StatelessWidget {
   }
 }
 
+/// Days before the dashboard asks "Is Room 4 still open?".
+const weeklyCheckDays = 7;
+
+/// The open room that went longest without a check, if that's over a week. Null if all are fresh.
+Room? roomToCheck(List<Room> rooms, {DateTime? now}) {
+  final n = now ?? DateTime.now();
+  Room? oldest;
+  for (final r in rooms) {
+    final at = r.updatedAt;
+    if (!r.available || at == null || n.difference(at).inDays < weeklyCheckDays) continue;
+    if (oldest == null || at.isBefore(oldest.updatedAt!)) oldest = r;
+  }
+  return oldest;
+}
+
 /// Opens a screen on top of the tab bar.
 void _push(BuildContext context, Widget screen) {
   Navigator.of(context, rootNavigator: true).push(CupertinoPageRoute(builder: (_) => screen));
@@ -114,6 +129,7 @@ class _PropertyDashboard extends StatelessWidget {
                 _StatTile(number: property.saveCount, label: property.saveCount == 1 ? 'save' : 'saves'),
               ],
             ),
+            if (roomToCheck(rooms) case final stale?) ...[const SizedBox(height: 16), _WeeklyCheck(room: stale)],
             const SizedBox(height: 16),
             if (snap.hasError)
               Text("Couldn't load rooms.", style: AppText.secondary)
@@ -155,7 +171,7 @@ class _PropertyDashboard extends StatelessWidget {
             const SizedBox(height: 10),
             ListingCard(
               name: property.name,
-              subtitle: 'New · ${property.area.isEmpty ? 'Puerto Princesa' : property.area}',
+              subtitle: property.area.isEmpty ? 'Puerto Princesa' : property.area,
               fromPrice: '₱${formatPesos(houseRooms?.cheapestOpen ?? property.priceMin)}',
               photoUrl: property.photos.isEmpty ? null : property.photos.first,
               openRooms: houseRooms?.open ?? 0,
@@ -173,6 +189,71 @@ class _PropertyDashboard extends StatelessWidget {
           ],
         );
       },
+    );
+  }
+}
+
+/// "Is Room 4 still open?" with Yes / No. Keeps the "Rooms checked" badge fresh for students.
+class _WeeklyCheck extends StatelessWidget {
+  const _WeeklyCheck({required this.room});
+
+  final Room room;
+
+  Future<void> _answer(BuildContext context, bool open) async {
+    try {
+      if (open) {
+        await RoomService().stillOpen(room);
+      } else {
+        await RoomService().setOpen(room, false);
+      }
+      if (context.mounted) showToast(context, open ? 'Thanks! ${room.name} stays open' : '${room.name} is now taken');
+    } catch (_) {
+      if (context.mounted) await showError(context, "Couldn't save. Check your internet and try again.");
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return RoundedCard(
+      color: AppColors.ink,
+      shadow: false,
+      padding: const EdgeInsets.all(18),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            'WEEKLY CHECK',
+            style: AppText.small.copyWith(fontWeight: FontWeight.w700, letterSpacing: 0.4, color: AppColors.onInkGood),
+          ),
+          const SizedBox(height: 4),
+          Text('Is ${room.name} still open?', style: AppText.section.copyWith(fontSize: 20, color: AppColors.card)),
+          const SizedBox(height: 4),
+          Text(
+            'Students trust rooms that were checked this week.',
+            style: AppText.secondary.copyWith(color: AppColors.onInkMuted),
+          ),
+          const SizedBox(height: 14),
+          Row(
+            children: [
+              Expanded(
+                child: PrimaryButton(
+                  label: "No, it's taken",
+                  color: AppColors.inkRaised,
+                  onPressed: () => _answer(context, false),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: PrimaryButton(
+                  label: 'Yes, open',
+                  color: AppColors.lagoon,
+                  onPressed: () => _answer(context, true),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

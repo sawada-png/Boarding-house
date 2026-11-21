@@ -157,10 +157,10 @@ Tenant and landlord both tap "moved out" (auto after 3 days if one forgets) → 
 ## Version 1 plan (4 weeks)
 - **Week 1:** set up Flutter + Firebase, login, landlord can add property + rooms with photos
 - **Week 2:** home list, listing page, room tabs, search + filters, map
-- **Week 3:** chat + call button, move in/out, reviews (verified stays only)
+- **Week 3:** chat + call button, move in/out, reviews (verified stays only), landlord ID verification (manual check)
 - **Week 4:** fix bugs, test with 2–3 real landlords, publish to Play Store
 
-**Not doing in Version 1:** payments, rent reminders, ads, ID verification, customer service, iPhone release (Android first)
+**Not doing in Version 1:** payments, rent reminders, ads, in-app ID upload (after Blaze), customer service, iPhone release (Android first)
 
 ## Progress
 Code: https://github.com/sawada-png/Boarding-house
@@ -194,7 +194,7 @@ Code: https://github.com/sawada-png/Boarding-house
 - [x] Saved (heart) + Share
 - [x] Landlord: Room Map with one-tap open/taken, room bills + move-in terms, save count
 
-**Week 3: next** — chat + call button, move in/out, reviews (verified stays only)
+**Week 3: next** — chat + call button, move in/out, reviews (verified stays only), landlord ID verification (manual: PhilID QR + selfie + business permit, admin turns on the badge)
 
 **How to run the app**
 1. Open the `Boarding-house` folder in Cursor, open a terminal

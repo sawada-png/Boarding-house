@@ -10,7 +10,7 @@ import 'room_dots.dart';
 import 'walk_pill.dart';
 
 /// Boarding house card on Home and Saved (design-2.0/2b): inset cover photo with a walk pill,
-/// name, "New · Mandaragat", "from ₱3,000", then room dots and when rooms were checked.
+/// name, "Mandaragat · Verified owner", "from ₱3,000", then room dots and when rooms were checked.
 class ListingCard extends StatelessWidget {
   const ListingCard({
     super.key,
@@ -29,7 +29,7 @@ class ListingCard extends StatelessWidget {
 
   final String name;
 
-  /// "New · Mandaragat"
+  /// "Mandaragat · Verified owner"
   final String subtitle;
 
   /// "₱3,000"

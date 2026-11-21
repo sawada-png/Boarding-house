@@ -6,7 +6,6 @@ import '../../theme/app_colors.dart';
 import '../../theme/app_text_styles.dart';
 import '../../widgets/dashed_box.dart';
 import '../../widgets/room_map.dart';
-import '../shared/dialogs.dart';
 import 'room_sheet.dart';
 
 /// Turns rooms into Room Map floors: top floor first, only floors that have rooms.
@@ -35,10 +34,13 @@ List<RoomMapFloor> roomMapFloors(List<Room> rooms) {
 /// House page Room Map card. Tap a room to see its photos and price below the map.
 /// With no rooms it shows empty dashed slots and an "Ask the owner" button (design-2.0/4b).
 class HouseRoomsCard extends StatefulWidget {
-  const HouseRoomsCard({super.key, required this.rooms});
+  const HouseRoomsCard({super.key, required this.rooms, required this.onAsk});
 
   /// Already sorted Room 1, Room 2...
   final List<Room> rooms;
+
+  /// Opens the chat, about one room or (null) the whole house.
+  final ValueChanged<Room?> onAsk;
 
   @override
   State<HouseRoomsCard> createState() => _HouseRoomsCardState();
@@ -50,7 +52,7 @@ class _HouseRoomsCardState extends State<HouseRoomsCard> {
   @override
   Widget build(BuildContext context) {
     final rooms = widget.rooms;
-    if (rooms.isEmpty) return const _NoRooms();
+    if (rooms.isEmpty) return _NoRooms(onAsk: () => widget.onAsk(null));
 
     final open = rooms.where((r) => r.available).length;
 
@@ -59,7 +61,7 @@ class _HouseRoomsCardState extends State<HouseRoomsCard> {
       selectedId: _selectedId,
       onTap: (t) {
         setState(() => _selectedId = t.id);
-        showRoomSheet(context, rooms.firstWhere((r) => r.id == t.id));
+        showRoomSheet(context, rooms.firstWhere((r) => r.id == t.id), onAsk: widget.onAsk);
       },
       trailing: Text(
         '$open of ${rooms.length} open',
@@ -71,7 +73,9 @@ class _HouseRoomsCardState extends State<HouseRoomsCard> {
 }
 
 class _NoRooms extends StatelessWidget {
-  const _NoRooms();
+  const _NoRooms({required this.onAsk});
+
+  final VoidCallback onAsk;
 
   @override
   Widget build(BuildContext context) {
@@ -118,11 +122,7 @@ class _NoRooms extends StatelessWidget {
           CupertinoButton(
             padding: EdgeInsets.zero,
             minimumSize: const Size(44, 44),
-            onPressed: () => showInfo(
-              context,
-              title: 'Coming soon',
-              message: 'Chatting with landlords is coming in the next update.',
-            ),
+            onPressed: onAsk,
             child: Container(
               height: 44,
               alignment: Alignment.center,

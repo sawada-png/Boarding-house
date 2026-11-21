@@ -91,7 +91,7 @@ void main() {
     expect(y('Walkable House'), lessThan(y('Full House'))); // full goes last even though it's closer
     expect(find.text('Full'), findsOneWidget);
     expect(find.text('1 of 2 open'), findsOneWidget);
-    expect(find.text('New · Tiniguiban · Verified owner'), findsOneWidget);
+    expect(find.text('Tiniguiban · Verified owner'), findsOneWidget);
     expect(find.textContaining('min walk to PSU'), findsNWidgets(3));
     expect(find.bySemanticsLabel('Saved. Tap to remove'), findsOneWidget);
   });

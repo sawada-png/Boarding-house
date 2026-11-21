@@ -9,13 +9,13 @@ import '../../widgets/photo_box.dart';
 import '../../widgets/photo_gallery.dart';
 import '../../widgets/primary_button.dart';
 import '../../widgets/status_badge.dart';
-import '../shared/dialogs.dart';
 
 /// Opens the room details as a sheet from the bottom (design-2.0/5-room).
-Future<void> showRoomSheet(BuildContext context, Room room) {
+/// [onAsk] opens the chat about this room.
+Future<void> showRoomSheet(BuildContext context, Room room, {required ValueChanged<Room> onAsk}) {
   return showCupertinoModalPopup<void>(
     context: context,
-    builder: (_) => RoomSheet(room: room),
+    builder: (_) => RoomSheet(room: room, onAsk: onAsk),
   );
 }
 
@@ -41,9 +41,10 @@ List<CostLine> roomCostLines(Room r) => [
 ];
 
 class RoomSheet extends StatelessWidget {
-  const RoomSheet({super.key, required this.room});
+  const RoomSheet({super.key, required this.room, required this.onAsk});
 
   final Room room;
+  final ValueChanged<Room> onAsk;
 
   @override
   Widget build(BuildContext context) {
@@ -109,12 +110,10 @@ class RoomSheet extends StatelessWidget {
                 PrimaryButton(
                   label: 'Ask about ${r.name}',
                   color: AppColors.lagoon,
-                  // shortcut: chat comes in Week 3.
-                  onPressed: () => showInfo(
-                    context,
-                    title: 'Coming soon',
-                    message: 'Chatting with landlords is coming in the next update.',
-                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                    onAsk(r);
+                  },
                 ),
                 const SizedBox(height: 12),
                 Row(

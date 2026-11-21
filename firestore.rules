@@ -30,15 +30,15 @@ service cloud.firestore {
       allow delete: if false;
     }
 
-    // Public landlord profile (name + verified badge). Anyone logged in can read it;
+    // Public landlord profile (name, phone for the Call button, verified badge). Anyone logged in can read it;
     // only the landlord can write it, and never the "verified" flag (BoardMate staff set that).
     match /landlords/{uid} {
       allow read: if signedIn();
       allow create: if isMe(uid)
-        && request.resource.data.keys().hasOnly(["name", "verified"])
+        && request.resource.data.keys().hasOnly(["name", "phone", "verified"])
         && request.resource.data.get("verified", false) == false;
       allow update: if isMe(uid)
-        && request.resource.data.keys().hasOnly(["name", "verified"])
+        && request.resource.data.keys().hasOnly(["name", "phone", "verified"])
         && request.resource.data.get("verified", false) == resource.data.get("verified", false);
       allow delete: if false;
     }
@@ -91,6 +91,113 @@ service cloud.firestore {
         && savedId == request.auth.uid + "_" + request.resource.data.propertyId
         && request.resource.data.keys().hasOnly(["userId", "propertyId", "savedAt"]);
       allow update: if false;
+    }
+
+    // Chats: chats/{studentId}_{propertyId}. Only the student and the landlord can see them.
+    // The student starts the chat with their first message; it must point at the real owner.
+    function chat(chatId) {
+      return /databases/$(database)/documents/chats/$(chatId);
+    }
+    function isMember(data) {
+      return signedIn() && request.auth.uid in data.members;
+    }
+    function chatKeys() {
+      return ["studentId", "landlordId", "propertyId", "propertyName", "studentName", "landlordName",
+        "latitude", "longitude", "members", "lastText", "lastAt", "lastSenderId"];
+    }
+    match /chats/{chatId} {
+      // A chat that doesn't exist yet may be looked at (the student opening it for the first time).
+      allow get: if signedIn() && (resource == null || isMember(resource.data));
+      allow list: if signedIn() && isMember(resource.data);
+      allow create: if signedIn()
+        && request.resource.data.keys().hasOnly(chatKeys())
+        && request.resource.data.studentId == request.auth.uid
+        && chatId == request.auth.uid + "_" + request.resource.data.propertyId
+        && request.resource.data.landlordId
+          == get(/databases/$(database)/documents/properties/$(request.resource.data.propertyId)).data.landlordId
+        && request.resource.data.landlordId != request.auth.uid
+        && request.resource.data.members == [request.auth.uid, request.resource.data.landlordId]
+        && request.resource.data.lastSenderId == request.auth.uid;
+      allow update: if isMember(resource.data)
+        && request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly(["lastText", "lastAt", "lastSenderId", "studentName", "landlordName", "propertyName",
+            "latitude", "longitude"])
+        && request.resource.data.lastSenderId == request.auth.uid
+        && request.resource.data.lastText is string && request.resource.data.lastText.size() <= 2000;
+      allow delete: if false;
+
+      // Messages. Senders can't be faked; the other person may only answer a visit card.
+      match /messages/{messageId} {
+        // The student's own chat id starts with their uid, so they can listen before the chat exists.
+        allow read: if signedIn()
+          && (chatId.matches(request.auth.uid + "_.*") || isMember(get(chat(chatId)).data));
+        allow create: if signedIn()
+          && isMember(getAfter(chat(chatId)).data)
+          && request.resource.data.senderId == request.auth.uid
+          && request.resource.data.kind in ["text", "room", "visit"]
+          && request.resource.data.keys().hasOnly(
+            ["senderId", "kind", "sentAt", "text", "roomName", "roomPrice", "visitDay", "visitTimes", "visitStatus"])
+          && request.resource.data.get("text", "").size() <= 2000
+          && request.resource.data.get("visitStatus", "open") == "open";
+        allow update: if signedIn()
+          && isMember(get(chat(chatId)).data)
+          && resource.data.kind == "visit"
+          && resource.data.senderId != request.auth.uid
+          && resource.data.visitStatus == "open"
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["picked", "visitStatus"])
+          && (
+            (request.resource.data.visitStatus == "confirmed" && request.resource.data.picked in resource.data.visitTimes)
+            || (request.resource.data.visitStatus == "declined" && request.resource.data.picked == null)
+          );
+        allow delete: if false;
+      }
+    }
+
+    // Stays (move in / move out). The landlord adds a student who messaged about the house;
+    // the student confirms ("active") or says no. Only the landlord can end it.
+    match /stays/{stayId} {
+      allow read: if signedIn()
+        && (resource.data.studentId == request.auth.uid || resource.data.landlordId == request.auth.uid);
+      allow create: if signedIn()
+        && request.resource.data.keys().hasOnly(["studentId", "studentName", "landlordId", "propertyId",
+          "propertyName", "roomId", "roomName", "status", "createdAt"])
+        && request.resource.data.landlordId == request.auth.uid
+        && request.resource.data.status == "pending"
+        && ownsProperty(request.resource.data.propertyId)
+        && get(/databases/$(database)/documents/rooms/$(request.resource.data.roomId)).data.propertyId
+          == request.resource.data.propertyId
+        && exists(chat(request.resource.data.studentId + "_" + request.resource.data.propertyId));
+      allow update: if signedIn()
+        && resource.data.studentId == request.auth.uid
+        && resource.data.status == "pending"
+        && request.resource.data.status in ["active", "declined"]
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["status", "movedInAt"]);
+      allow update: if signedIn()
+        && resource.data.landlordId == request.auth.uid
+        && resource.data.status in ["pending", "active"]
+        && request.resource.data.status == "ended"
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["status", "movedOutAt"]);
+      allow delete: if false;
+    }
+
+    // Reviews: reviews/{stayId}, only by the student of a confirmed stay. Anyone logged in can read.
+    function reviewOk(stayId) {
+      let stay = get(/databases/$(database)/documents/stays/$(stayId)).data;
+      return request.resource.data.keys().hasOnly(
+          ["propertyId", "studentId", "studentName", "roomName", "stars", "text", "createdAt"])
+        && request.resource.data.studentId == request.auth.uid
+        && stay.studentId == request.auth.uid
+        && stay.status in ["active", "ended"]
+        && request.resource.data.propertyId == stay.propertyId
+        && request.resource.data.stars is int
+        && request.resource.data.stars >= 1 && request.resource.data.stars <= 5
+        && request.resource.data.text is string && request.resource.data.text.size() <= 500;
+    }
+    match /reviews/{stayId} {
+      allow read: if signedIn();
+      allow create: if signedIn() && reviewOk(stayId);
+      allow update: if signedIn() && resource.data.studentId == request.auth.uid && reviewOk(stayId);
+      allow delete: if signedIn() && resource.data.studentId == request.auth.uid;
     }
   }
 }

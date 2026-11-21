@@ -2,7 +2,7 @@ import 'package:cupertino_ui/cupertino_ui.dart';
 
 import '../../models/app_user.dart';
 import '../../widgets/bm_tab_scaffold.dart';
-import '../shared/placeholder_tab.dart';
+import '../shared/messages_tab.dart';
 import '../shared/profile_tab.dart';
 import 'home_tab.dart';
 import 'saved_tab.dart';
@@ -30,7 +30,7 @@ class TenantShell extends StatelessWidget {
         BmTab(
           icon: CupertinoIcons.chat_bubble,
           label: 'Messages',
-          builder: (_) => const PlaceholderTab(title: 'Messages', comingIn: 'Week 3'),
+          builder: (_) => MessagesTab(profile: profile),
         ),
         BmTab(
           icon: CupertinoIcons.person,

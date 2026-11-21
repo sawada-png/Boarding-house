@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:boardmate/models/property.dart';
+import 'package:boardmate/models/review.dart';
 import 'package:boardmate/models/room.dart';
 import 'package:boardmate/models/school.dart';
 import 'package:boardmate/screens/tenant/home_logic.dart';
@@ -25,7 +26,7 @@ void main() {
     tags: ['Wi-Fi'],
   );
 
-  Future<void> open(WidgetTester tester, List<Room> rooms) async {
+  Future<void> open(WidgetTester tester, List<Room> rooms, {List<Review> reviews = const []}) async {
     // Wide: the test font makes the map credit too long for a phone width.
     await tester.binding.setSurfaceSize(const Size(800, 1800));
     addTearDown(() => tester.binding.setSurfaceSize(null));
@@ -37,6 +38,7 @@ void main() {
           userId: 'u1',
           rooms: Stream.value(rooms),
           savedIds: Stream.value(const []),
+          reviews: Stream.value(reviews),
           landlord: const LandlordInfo(name: 'Nathan Grande', verified: true),
         ),
       ),
@@ -89,10 +91,30 @@ void main() {
     expect(find.text('Never send a deposit before you visit.'), findsOneWidget);
     await tester.tap(find.bySemanticsLabel('Close'));
     await tester.pumpAndSettle();
+    expect(find.text('Reviews'), findsNothing);
+  });
 
-    await tester.tap(find.text('Plan a visit'));
-    await tester.pumpAndSettle();
-    expect(find.text('Coming soon'), findsOneWidget);
+  testWidgets('House page with reviews: star chip and the reviews list', (tester) async {
+    await open(
+      tester,
+      const [],
+      reviews: const [
+        Review(
+          propertyId: 'p1',
+          studentId: 's1',
+          studentName: 'Ana Cruz',
+          roomName: 'Room 1',
+          stars: 5,
+          text: 'Quiet.',
+        ),
+        Review(propertyId: 'p1', studentId: 's2', studentName: 'Ben', roomName: 'Room 2', stars: 4, text: ''),
+      ],
+    );
+    expect(find.text('4.5 · 2 reviews'), findsOneWidget);
+    expect(find.text('New · no reviews yet'), findsNothing);
+    expect(find.text('Reviews'), findsOneWidget);
+    expect(find.text('Quiet.'), findsOneWidget);
+    expect(find.text('Ana · stayed in Room 1'), findsOneWidget);
   });
 
   testWidgets('House page with no rooms: empty Room Map, ask button, price range + Message', (tester) async {

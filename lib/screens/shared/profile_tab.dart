@@ -9,9 +9,11 @@ import '../../widgets/bm_tab_scaffold.dart';
 import '../../widgets/primary_button.dart';
 import '../../widgets/rounded_card.dart';
 import '../../widgets/status_badge.dart';
+import '../landlord/get_verified_card.dart';
 import '../shared/dialogs.dart';
+import '../tenant/your_stays.dart';
 
-/// For now: who is logged in, switch mode, and log out. Full profile comes in Week 3.
+/// Who is logged in, your stays (students) or the verified badge (landlords), switch mode, and log out.
 class ProfileTab extends StatefulWidget {
   const ProfileTab({super.key, required this.profile});
 
@@ -76,6 +78,11 @@ class _ProfileTabState extends State<ProfileTab> {
                 ],
               ),
             ),
+            if (p.isLandlord) ...[
+              const SizedBox(height: 16),
+              GetVerifiedCard(uid: p.uid, name: p.name),
+            ] else
+              YourStays(uid: p.uid),
             const SizedBox(height: 16),
             RoundedCard(
               shadow: false,

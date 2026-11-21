@@ -51,6 +51,13 @@ class RoomService {
     return batch.commit();
   }
 
+  /// Weekly check "Yes, still open": marks the room as checked without changing it.
+  Future<void> stillOpen(Room room) {
+    final batch = _db.batch()..update(_rooms.doc(room.id), {'updatedAt': FieldValue.serverTimestamp()});
+    _confirm(batch, room.propertyId);
+    return batch.commit();
+  }
+
   /// Any room change by the landlord counts as "rooms checked" on the house.
   void _confirm(WriteBatch batch, String propertyId) =>
       batch.update(_db.collection('properties').doc(propertyId), {'lastConfirmedAt': FieldValue.serverTimestamp()});
