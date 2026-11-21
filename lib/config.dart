@@ -4,5 +4,5 @@ const cloudinaryCloudName = 'jmt8fzoj';
 const cloudinaryUploadPreset = 'boardmate_unsigned';
 
 /// Where landlords send their ID for the "Verified owner" badge.
-/// Empty hides the "Email my documents" button.
-const verifyEmail = '';
+/// Empty would hide the "Email my documents" button.
+const verifyEmail = 'boardmate.verify@gmail.com';

@@ -201,7 +201,7 @@ Code: https://github.com/sawada-png/Boarding-house
 - [x] Reviews only from confirmed stays; stars on the house page
 - [x] Get verified card (manual check: PhilID QR + selfie + business permit; staff turn on the badge in Firebase)
 - [x] Weekly check on the dashboard: "Is Room 4 still open?"
-- [ ] Pick the email landlords send their ID to (lib/config.dart → verifyEmail)
+- [x] ID email: boardmate.verify@gmail.com (lib/config.dart)
 - [ ] Test chat, visits, move-in and reviews with a student + landlord account
 
 **Week 4: next** — fix bugs, test with 2–3 real landlords, publish to Play Store
